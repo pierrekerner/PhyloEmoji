@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Phylogénie Emoji</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .question {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #444;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .organisms {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .organism-box {
+            text-align: center;
+        }
+        
+        .organism {
+            font-size: 4.5em;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            border: 4px solid #e0e0e0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .organism-label {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .choice {
+            padding: 20px;
+            background: #f8f9fa;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        .choice:hover {
+            background: #e3f2fd;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .choice.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .choice.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+        
+        .choice.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .feedback {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            line-height: 1.8;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border: 3px solid #4caf50;
+        }
+        
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border: 3px solid #f44336;
+        }
+        
+        .feedback-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .feedback-content {
+            font-size: 1em;
+            color: #333;
+        }
+        
+        .time-info {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .time-value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        .next-btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+            transition: transform 0.2s;
+        }
+        
+        .next-btn.show {
+            display: block;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .taxonomy-info {
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        
+        .mode-selection {
+            text-align: center;
+        }
+        
+        .mode-title {
+            font-size: 1.3em;
+            color: #333;
+            margin: 40px 0 30px 0;
+            font-weight: 600;
+        }
+        
+        .mode-options {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .mode-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 250px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+        
+        .mode-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+        
+        .mode-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .mode-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .game-mode-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-mode-indicator span {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .change-mode-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .change-mode-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div id="modeSelection" class="mode-selection">
+            <h1>🌳 Phylogénie des Emojis 🌳</h1>
+            <div class="subtitle">Identifiez les deux organismes les plus proches phylogénétiquement</div>
+            
+            <div class="mode-title">Choisissez votre jeu :</div>
+            
+            <div class="mode-options">
+                <div class="mode-card" onclick="startGame('plants')">
+                    <div class="mode-emoji">🌿</div>
+                    <div class="mode-name">Plantes</div>
+                    <div class="mode-description">Angiospermes, gymnospermes et fougères</div>
+                </div>
+                
+                <div class="mode-card" onclick="startGame('animals')">
+                    <div class="mode-emoji">🦁</div>
+                    <div class="mode-name">Animaux</div>
+                    <div class="mode-description">Mammifères, oiseaux, reptiles, insectes...</div>
+                </div>
+                
+                <div class="mode-card" onclick="startGame('all')">
+                    <div class="mode-emoji">🌍</div>
+                    <div class="mode-name">Tout le vivant</div>
+                    <div class="mode-description">Plantes, animaux, champignons</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gameContent" style="display: none;">
+            <h1>🌳 Phylogénie des Emojis 🌳</h1>
+            <div class="subtitle">Identifiez les deux organismes les plus proches phylogénétiquement</div>
+            
+            <div class="game-mode-indicator">
+                <span id="currentMode"></span>
+                <button class="change-mode-btn" onclick="returnToMenu()">Changer de mode</button>
+            </div>
+            
+            <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Score</div>
+                <div class="stat-value"><span id="score">0</span> / <span id="total">0</span></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Taux de réussite</div>
+                <div class="stat-value" id="percentage">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Question</div>
+                <div class="stat-value" id="questionNum">1</div>
+            </div>
+        </div>
+        
+        <div class="question">
+            Parmi ces trois organismes, quels sont les <strong>deux qui partagent l'ancêtre commun le plus récent</strong> ?
+        </div>
+        
+        <div class="organisms" id="organisms"></div>
+        
+        <div class="choices" id="choices"></div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Question suivante ➜</button>
+        </div>
+    </div>
+
+    <script>
+        // Données phylogénétiques basées sur TimeTree.org
+        const organisms = [
+            // PLANTES ANGIOSPERMES
+            // Rosacées
+            { emoji: '🍎', name: 'Pomme', latin: 'Malus domestica', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Malus' },
+            { emoji: '🍐', name: 'Poire', latin: 'Pyrus communis', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Pyrus' },
+            { emoji: '🍑', name: 'Pêche', latin: 'Prunus persica', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Prunus-peche' },
+            { emoji: '🍒', name: 'Cerise', latin: 'Prunus avium', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Prunus-cerise' },
+            { emoji: '🍓', name: 'Fraise', latin: 'Fragaria ×ananassa', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Fragaria' },
+            { emoji: '🌹', name: 'Rose', latin: 'Rosa spp.', group: 'Rosacées', family: 'Rosacées', order: 'Rosales', class: 'Angiospermes', species: 'Rosa' },
+            
+            // Solanacées
+            { emoji: '🍅', name: 'Tomate', latin: 'Solanum lycopersicum', group: 'Solanacées', family: 'Solanacées', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-tomate' },
+            { emoji: '🍆', name: 'Aubergine', latin: 'Solanum melongena', group: 'Solanacées', family: 'Solanacées', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-aubergine' },
+            { emoji: '🥔', name: 'Pomme de terre', latin: 'Solanum tuberosum', group: 'Solanacées', family: 'Solanacées', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-pomme' },
+            { emoji: '🌶️', name: 'Piment', latin: 'Capsicum annuum', group: 'Solanacées', family: 'Solanacées', order: 'Solanales', class: 'Angiospermes', species: 'Capsicum' },
+            
+            // Cucurbitacées  
+            { emoji: '🍉', name: 'Pastèque', latin: 'Citrullus lanatus', group: 'Cucurbitacées', family: 'Cucurbitacées', order: 'Cucurbitales', class: 'Angiospermes', species: 'Citrullus' },
+            { emoji: '🥒', name: 'Concombre', latin: 'Cucumis sativus', group: 'Cucurbitacées', family: 'Cucurbitacées', order: 'Cucurbitales', class: 'Angiospermes', species: 'Cucumis-concombre' },
+            { emoji: '🍈', name: 'Melon', latin: 'Cucumis melo', group: 'Cucurbitacées', family: 'Cucurbitacées', order: 'Cucurbitales', class: 'Angiospermes', species: 'Cucumis-melon' },
+            { emoji: '🎃', name: 'Citrouille', latin: 'Cucurbita pepo', group: 'Cucurbitacées', family: 'Cucurbitacées', order: 'Cucurbitales', class: 'Angiospermes', species: 'Cucurbita' },
+            
+            // Fabacées
+            { emoji: '🥜', name: 'Cacahuète', latin: 'Arachis hypogaea', group: 'Fabacées', family: 'Fabacées', order: 'Fabales', class: 'Angiospermes', species: 'Arachis' },
+            { emoji: '☘️', name: 'Trèfle', latin: 'Trifolium spp.', group: 'Fabacées', family: 'Fabacées', order: 'Fabales', class: 'Angiospermes', species: 'Trifolium' },
+            
+            // Poacées
+            { emoji: '🌾', name: 'Riz', latin: 'Oryza sativa', group: 'Poacées', family: 'Poacées', order: 'Poales', class: 'Angiospermes', species: 'Oryza' },
+            { emoji: '🌽', name: 'Maïs', latin: 'Zea mays', group: 'Poacées', family: 'Poacées', order: 'Poales', class: 'Angiospermes', species: 'Zea' },
+            { emoji: '🎋', name: 'Bambou', latin: 'Bambusoideae', group: 'Poacées', family: 'Poacées', order: 'Poales', class: 'Angiospermes', species: 'Bambusa' },
+            
+            // Rutacées (Agrumes)
+            { emoji: '🍊', name: 'Orange', latin: 'Citrus sinensis', group: 'Rutacées', family: 'Rutacées', order: 'Sapindales', class: 'Angiospermes', species: 'Citrus-orange' },
+            { emoji: '🍋', name: 'Citron', latin: 'Citrus limon', group: 'Rutacées', family: 'Rutacées', order: 'Sapindales', class: 'Angiospermes', species: 'Citrus-citron' },
+            
+            // Autres Angiospermes
+            { emoji: '🥕', name: 'Carotte', latin: 'Daucus carota', group: 'Apiacées', family: 'Apiacées', order: 'Apiales', class: 'Angiospermes', species: 'Daucus' },
+            { emoji: '🌻', name: 'Tournesol', latin: 'Helianthus annuus', group: 'Astéracées', family: 'Astéracées', order: 'Asterales', class: 'Angiospermes', species: 'Helianthus' },
+            { emoji: '🥦', name: 'Brocoli', latin: 'Brassica oleracea', group: 'Brassicacées', family: 'Brassicacées', order: 'Brassicales', class: 'Angiospermes', species: 'Brassica' },
+            { emoji: '🍇', name: 'Raisin', latin: 'Vitis vinifera', group: 'Vitacées', family: 'Vitacées', order: 'Vitales', class: 'Angiospermes', species: 'Vitis' },
+            { emoji: '🌵', name: 'Cactus', latin: 'Cactaceae', group: 'Cactacées', family: 'Cactacées', order: 'Caryophyllales', class: 'Angiospermes', species: 'Cactus' },
+            { emoji: '🌷', name: 'Tulipe', latin: 'Tulipa spp.', group: 'Liliacées', family: 'Liliacées', order: 'Liliales', class: 'Angiospermes', species: 'Tulipa' },
+            { emoji: '🍌', name: 'Banane', latin: 'Musa spp.', group: 'Musacées', family: 'Musacées', order: 'Zingiberales', class: 'Angiospermes', species: 'Musa' },
+            { emoji: '🥥', name: 'Coco', latin: 'Cocos nucifera', group: 'Arecacées', family: 'Arecacées', order: 'Arecales', class: 'Angiospermes', species: 'Cocos' },
+            
+            // GYMNOSPERMES
+            { emoji: '🌲', name: 'Conifère', latin: 'Pinus spp.', group: 'Pinacées', family: 'Pinacées', order: 'Pinales', class: 'Gymnospermes', species: 'Pinus' },
+            { emoji: '🎄', name: 'Sapin', latin: 'Abies spp.', group: 'Pinacées', family: 'Pinacées', order: 'Pinales', class: 'Gymnospermes', species: 'Abies' },
+            
+            // MAMMIFÈRES
+            // Primates
+            { emoji: '🐵', name: 'Singe', latin: 'Macaca spp.', group: 'Primates', family: 'Cercopithecidae', order: 'Primates', class: 'Mammalia', species: 'Macaca' },
+            { emoji: '🦍', name: 'Gorille', latin: 'Gorilla gorilla', group: 'Hominidés', family: 'Hominidae', order: 'Primates', class: 'Mammalia', species: 'Gorilla' },
+            { emoji: '🦧', name: 'Orang-outan', latin: 'Pongo spp.', group: 'Hominidés', family: 'Hominidae', order: 'Primates', class: 'Mammalia', species: 'Pongo' },
+            
+            // Carnivores - Félidés
+            { emoji: '🐱', name: 'Chat', latin: 'Felis catus', group: 'Félidés', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Felis' },
+            { emoji: '🦁', name: 'Lion', latin: 'Panthera leo', group: 'Félidés', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Panthera-lion' },
+            { emoji: '🐯', name: 'Tigre', latin: 'Panthera tigris', group: 'Félidés', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Panthera-tigre' },
+            
+            // Carnivores - Canidés
+            { emoji: '🐶', name: 'Chien', latin: 'Canis familiaris', group: 'Canidés', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Canis-chien' },
+            { emoji: '🐺', name: 'Loup', latin: 'Canis lupus', group: 'Canidés', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Canis-loup' },
+            { emoji: '🦊', name: 'Renard', latin: 'Vulpes vulpes', group: 'Canidés', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Vulpes' },
+            
+            // Carnivores - Ursidés
+            { emoji: '🐻', name: 'Ours', latin: 'Ursus arctos', group: 'Ursidés', family: 'Ursidae', order: 'Carnivora', class: 'Mammalia', species: 'Ursus' },
+            { emoji: '🐼', name: 'Panda', latin: 'Ailuropoda melanoleuca', group: 'Ursidés', family: 'Ursidae', order: 'Carnivora', class: 'Mammalia', species: 'Ailuropoda' },
+            
+            // Ongulés
+            { emoji: '🐘', name: 'Éléphant', latin: 'Loxodonta africana', group: 'Proboscidiens', family: 'Elephantidae', order: 'Proboscidea', class: 'Mammalia', species: 'Loxodonta' },
+            { emoji: '🐴', name: 'Cheval', latin: 'Equus caballus', group: 'Équidés', family: 'Equidae', order: 'Perissodactyla', class: 'Mammalia', species: 'Equus-cheval' },
+            { emoji: '🦓', name: 'Zèbre', latin: 'Equus zebra', group: 'Équidés', family: 'Equidae', order: 'Perissodactyla', class: 'Mammalia', species: 'Equus-zebre' },
+            { emoji: '🐮', name: 'Vache', latin: 'Bos taurus', group: 'Bovidés', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Bos' },
+            { emoji: '🐐', name: 'Chèvre', latin: 'Capra hircus', group: 'Bovidés', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Capra' },
+            { emoji: '🐑', name: 'Mouton', latin: 'Ovis aries', group: 'Bovidés', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Ovis' },
+            { emoji: '🐷', name: 'Cochon', latin: 'Sus scrofa', group: 'Suidés', family: 'Suidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Sus' },
+            { emoji: '🐪', name: 'Dromadaire', latin: 'Camelus dromedarius', group: 'Camélidés', family: 'Camelidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Camelus-dromadaire' },
+            { emoji: '🐫', name: 'Chameau', latin: 'Camelus bactrianus', group: 'Camélidés', family: 'Camelidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Camelus-chameau' },
+            { emoji: '🦌', name: 'Cerf', latin: 'Cervus elaphus', group: 'Cervidés', family: 'Cervidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Cervus' },
+            { emoji: '🦒', name: 'Girafe', latin: 'Giraffa camelopardalis', group: 'Giraffidés', family: 'Giraffidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Giraffa' },
+            { emoji: '🦛', name: 'Hippopotame', latin: 'Hippopotamus amphibius', group: 'Hippopotamidés', family: 'Hippopotamidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Hippopotamus' },
+            
+            // Rongeurs
+            { emoji: '🐭', name: 'Souris', latin: 'Mus musculus', group: 'Muridés', family: 'Muridae', order: 'Rodentia', class: 'Mammalia', species: 'Mus' },
+            { emoji: '🐀', name: 'Rat', latin: 'Rattus norvegicus', group: 'Muridés', family: 'Muridae', order: 'Rodentia', class: 'Mammalia', species: 'Rattus' },
+            { emoji: '🐹', name: 'Hamster', latin: 'Cricetinae', group: 'Cricétidés', family: 'Cricetidae', order: 'Rodentia', class: 'Mammalia', species: 'Cricetus' },
+            
+            // Lagomorphes
+            { emoji: '🐰', name: 'Lapin', latin: 'Oryctolagus cuniculus', group: 'Léporidés', family: 'Leporidae', order: 'Lagomorpha', class: 'Mammalia', species: 'Oryctolagus' },
+            
+            // Cétacés
+            { emoji: '🐳', name: 'Baleine', latin: 'Balaenoptera musculus', group: 'Cétacés', family: 'Balaenopteridae', order: 'Cetacea', class: 'Mammalia', species: 'Balaenoptera' },
+            { emoji: '🐬', name: 'Dauphin', latin: 'Delphinus delphis', group: 'Cétacés', family: 'Delphinidae', order: 'Cetacea', class: 'Mammalia', species: 'Delphinus' },
+            
+            // OISEAUX
+            { emoji: '🐔', name: 'Poule', latin: 'Gallus gallus', group: 'Gallinacés', family: 'Phasianidae', order: 'Galliformes', class: 'Aves', species: 'Gallus' },
+            { emoji: '🦃', name: 'Dindon', latin: 'Meleagris gallopavo', group: 'Gallinacés', family: 'Phasianidae', order: 'Galliformes', class: 'Aves', species: 'Meleagris' },
+            { emoji: '🦆', name: 'Canard', latin: 'Anas platyrhynchos', group: 'Anatidés', family: 'Anatidae', order: 'Anseriformes', class: 'Aves', species: 'Anas' },
+            { emoji: '🦢', name: 'Cygne', latin: 'Cygnus spp.', group: 'Anatidés', family: 'Anatidae', order: 'Anseriformes', class: 'Aves', species: 'Cygnus' },
+            { emoji: '🦅', name: 'Aigle', latin: 'Aquila chrysaetos', group: 'Accipitridés', family: 'Accipitridae', order: 'Accipitriformes', class: 'Aves', species: 'Aquila' },
+            { emoji: '🦉', name: 'Hibou', latin: 'Bubo bubo', group: 'Strigidés', family: 'Strigidae', order: 'Strigiformes', class: 'Aves', species: 'Bubo' },
+            { emoji: '🐧', name: 'Manchot', latin: 'Aptenodytes forsteri', group: 'Sphéniscidés', family: 'Spheniscidae', order: 'Sphenisciformes', class: 'Aves', species: 'Aptenodytes' },
+            
+            // REPTILES
+            { emoji: '🐊', name: 'Crocodile', latin: 'Crocodylus niloticus', group: 'Crocodiliens', family: 'Crocodylidae', order: 'Crocodilia', class: 'Reptilia', species: 'Crocodylus' },
+            { emoji: '🐍', name: 'Serpent', latin: 'Python spp.', group: 'Serpents', family: 'Pythonidae', order: 'Squamata', class: 'Reptilia', species: 'Python' },
+            { emoji: '🦎', name: 'Lézard', latin: 'Lacerta spp.', group: 'Lézards', family: 'Lacertidae', order: 'Squamata', class: 'Reptilia', species: 'Lacerta' },
+            { emoji: '🐢', name: 'Tortue', latin: 'Testudo spp.', group: 'Tortues', family: 'Testudinidae', order: 'Testudines', class: 'Reptilia', species: 'Testudo' },
+            
+            // AMPHIBIENS
+            { emoji: '🐸', name: 'Grenouille', latin: 'Rana temporaria', group: 'Anoures', family: 'Ranidae', order: 'Anura', class: 'Amphibia', species: 'Rana' },
+            
+            // POISSONS
+            { emoji: '🐟', name: 'Poisson', latin: 'Danio rerio', group: 'Poissons osseux', family: 'Cyprinidae', order: 'Cypriniformes', class: 'Actinopterygii', species: 'Danio' },
+            { emoji: '🐠', name: 'Poisson tropical', latin: 'Pomacanthus', group: 'Poissons osseux', family: 'Pomacanthidae', order: 'Perciformes', class: 'Actinopterygii', species: 'Pomacanthus' },
+            { emoji: '🦈', name: 'Requin', latin: 'Carcharodon carcharias', group: 'Chondrichtyens', family: 'Lamnidae', order: 'Lamniformes', class: 'Chondrichthyes', species: 'Carcharodon' },
+            
+            // ARTHROPODES - Insectes
+            { emoji: '🦋', name: 'Papillon', latin: 'Danaus plexippus', group: 'Lépidoptères', family: 'Nymphalidae', order: 'Lepidoptera', class: 'Insecta', species: 'Danaus' },
+            { emoji: '🐝', name: 'Abeille', latin: 'Apis mellifera', group: 'Hyménoptères', family: 'Apidae', order: 'Hymenoptera', class: 'Insecta', species: 'Apis' },
+            { emoji: '🐜', name: 'Fourmi', latin: 'Formica spp.', group: 'Hyménoptères', family: 'Formicidae', order: 'Hymenoptera', class: 'Insecta', species: 'Formica' },
+            { emoji: '🐞', name: 'Coccinelle', latin: 'Coccinella septempunctata', group: 'Coléoptères', family: 'Coccinellidae', order: 'Coleoptera', class: 'Insecta', species: 'Coccinella' },
+            { emoji: '🪲', name: 'Scarabée', latin: 'Scarabaeus sacer', group: 'Coléoptères', family: 'Scarabaeidae', order: 'Coleoptera', class: 'Insecta', species: 'Scarabaeus' },
+            { emoji: '🦟', name: 'Moustique', latin: 'Anopheles gambiae', group: 'Diptères', family: 'Culicidae', order: 'Diptera', class: 'Insecta', species: 'Anopheles' },
+            { emoji: '🪰', name: 'Mouche', latin: 'Musca domestica', group: 'Diptères', family: 'Muscidae', order: 'Diptera', class: 'Insecta', species: 'Musca' },
+            
+            // Arachnides
+            { emoji: '🕷️', name: 'Araignée', latin: 'Araneus diadematus', group: 'Arachnides', family: 'Araneidae', order: 'Araneae', class: 'Arachnida', species: 'Araneus' },
+            { emoji: '🦂', name: 'Scorpion', latin: 'Centruroides sculpturatus', group: 'Arachnides', family: 'Buthidae', order: 'Scorpiones', class: 'Arachnida', species: 'Centruroides' },
+            
+            // Crustacés
+            { emoji: '🦀', name: 'Crabe', latin: 'Cancer pagurus', group: 'Crustacés', family: 'Cancridae', order: 'Decapoda', class: 'Malacostraca', species: 'Cancer' },
+            { emoji: '🦞', name: 'Homard', latin: 'Homarus americanus', group: 'Crustacés', family: 'Nephropidae', order: 'Decapoda', class: 'Malacostraca', species: 'Homarus' },
+            { emoji: '🦐', name: 'Crevette', latin: 'Penaeus monodon', group: 'Crustacés', family: 'Penaeidae', order: 'Decapoda', class: 'Malacostraca', species: 'Penaeus' },
+            
+            // MOLLUSQUES
+            { emoji: '🐌', name: 'Escargot', latin: 'Helix pomatia', group: 'Gastéropodes', family: 'Helicidae', order: 'Stylommatophora', class: 'Gastropoda', species: 'Helix' },
+            { emoji: '🐙', name: 'Pieuvre', latin: 'Octopus vulgaris', group: 'Céphalopodes', family: 'Octopodidae', order: 'Octopoda', class: 'Cephalopoda', species: 'Octopus' },
+            { emoji: '🦑', name: 'Calmar', latin: 'Loligo vulgaris', group: 'Céphalopodes', family: 'Loliginidae', order: 'Myopsida', class: 'Cephalopoda', species: 'Loligo' },
+            
+            // CNIDAIRES
+            { emoji: '🪸', name: 'Corail', latin: 'Corallium rubrum', group: 'Cnidaires', family: 'Coralliidae', order: 'Alcyonacea', class: 'Anthozoa', species: 'Corallium' },
+            
+            // CHAMPIGNONS
+            { emoji: '🍄', name: 'Champignon', latin: 'Agaricus bisporus', group: 'Champignons', family: 'Agaricaceae', order: 'Agaricales', class: 'Fungi', species: 'Agaricus' }
+        ];
+
+        // Données de divergence basées sur TimeTree (en millions d'années)
+        const divergenceTimes = {
+            // Distances entre grands groupes
+            'Fungi-Mammalia': 1500,
+            'Fungi-Aves': 1500,
+            'Fungi-Reptilia': 1500,
+            'Fungi-Amphibia': 1500,
+            'Fungi-Actinopterygii': 1500,
+            'Fungi-Insecta': 1500,
+            'Fungi-Arachnida': 1500,
+            'Fungi-Malacostraca': 1500,
+            'Fungi-Gastropoda': 1500,
+            'Fungi-Cephalopoda': 1500,
+            'Fungi-Anthozoa': 1500,
+            'Fungi-Angiospermes': 1600,
+            'Fungi-Gymnospermes': 1600,
+            
+            'Angiospermes-Mammalia': 1500,
+            'Angiospermes-Aves': 1500,
+            'Angiospermes-Reptilia': 1500,
+            'Angiospermes-Amphibia': 1500,
+            'Angiospermes-Actinopterygii': 1500,
+            'Angiospermes-Insecta': 1500,
+            'Angiospermes-Arachnida': 1500,
+            'Angiospermes-Malacostraca': 1500,
+            'Angiospermes-Gastropoda': 1500,
+            'Angiospermes-Cephalopoda': 1500,
+            'Angiospermes-Anthozoa': 1500,
+            'Angiospermes-Gymnospermes': 300,
+            
+            'Gymnospermes-Mammalia': 1500,
+            'Gymnospermes-Aves': 1500,
+            'Gymnospermes-Reptilia': 1500,
+            'Gymnospermes-Amphibia': 1500,
+            'Gymnospermes-Actinopterygii': 1500,
+            'Gymnospermes-Insecta': 1500,
+            'Gymnospermes-Arachnida': 1500,
+            
+            // Entre classes animales
+            'Mammalia-Aves': 320,
+            'Mammalia-Reptilia': 320,
+            'Mammalia-Amphibia': 360,
+            'Mammalia-Actinopterygii': 435,
+            'Mammalia-Chondrichthyes': 450,
+            'Mammalia-Insecta': 750,
+            'Mammalia-Arachnida': 750,
+            'Mammalia-Malacostraca': 750,
+            'Mammalia-Gastropoda': 750,
+            'Mammalia-Cephalopoda': 750,
+            'Mammalia-Anthozoa': 800,
+            
+            'Aves-Reptilia': 255,
+            'Aves-Amphibia': 360,
+            'Aves-Actinopterygii': 435,
+            'Aves-Insecta': 750,
+            'Aves-Arachnida': 750,
+            
+            'Reptilia-Amphibia': 360,
+            'Reptilia-Actinopterygii': 435,
+            'Reptilia-Insecta': 750,
+            
+            'Amphibia-Actinopterygii': 435,
+            'Amphibia-Insecta': 750,
+            
+            'Actinopterygii-Chondrichthyes': 450,
+            'Actinopterygii-Insecta': 750,
+            'Actinopterygii-Arachnida': 750,
+            
+            'Insecta-Arachnida': 510,
+            'Insecta-Malacostraca': 540,
+            'Insecta-Gastropoda': 750,
+            'Insecta-Cephalopoda': 750,
+            
+            'Arachnida-Malacostraca': 540,
+            'Arachnida-Gastropoda': 750,
+            
+            'Malacostraca-Gastropoda': 750,
+            'Malacostraca-Cephalopoda': 750,
+            
+            'Gastropoda-Cephalopoda': 520,
+            'Gastropoda-Anthozoa': 700,
+            'Cephalopoda-Anthozoa': 700,
+            
+            // Ordres de mammifères
+            'Primates-Carnivora': 92,
+            'Primates-Artiodactyla': 96,
+            'Primates-Perissodactyla': 96,
+            'Primates-Proboscidea': 105,
+            'Primates-Rodentia': 92,
+            'Primates-Lagomorpha': 92,
+            'Primates-Cetacea': 96,
+            
+            'Carnivora-Artiodactyla': 86,
+            'Carnivora-Perissodactyla': 86,
+            'Carnivora-Cetacea': 86,
+            'Carnivora-Rodentia': 92,
+            
+            'Artiodactyla-Perissodactyla': 86,
+            'Artiodactyla-Cetacea': 55, // Très proches
+            'Artiodactyla-Proboscidea': 105,
+            
+            'Rodentia-Lagomorpha': 82,
+            
+            // Familles de Carnivores
+            'Felidae-Canidae': 52,
+            'Felidae-Ursidae': 52,
+            'Canidae-Ursidae': 48,
+            
+            // Familles de Primates
+            'Hominidae-Cercopithecidae': 29,
+            
+            // Ordres d'oiseaux
+            'Galliformes-Anseriformes': 70,
+            'Galliformes-Accipitriformes': 90,
+            'Galliformes-Strigiformes': 90,
+            'Galliformes-Sphenisciformes': 90,
+            'Anseriformes-Accipitriformes': 90,
+            
+            // Ordres de reptiles
+            'Crocodilia-Squamata': 255,
+            'Crocodilia-Testudines': 255,
+            'Squamata-Testudines': 260,
+            
+            // Ordres d'insectes
+            'Lepidoptera-Hymenoptera': 280,
+            'Lepidoptera-Coleoptera': 300,
+            'Lepidoptera-Diptera': 320,
+            'Hymenoptera-Coleoptera': 300,
+            'Hymenoptera-Diptera': 320,
+            'Coleoptera-Diptera': 320,
+            
+            // Ordres d'Angiospermes
+            'Rosales-Solanales': 110,
+            'Rosales-Cucurbitales': 90,
+            'Rosales-Fabales': 110,
+            'Rosales-Poales': 120,
+            'Rosales-Sapindales': 110,
+            'Rosales-Brassicales': 100,
+            
+            'Solanales-Fabales': 100,
+            'Fabales-Rosales': 110,
+            'Cucurbitales-Fabales': 100,
+            
+            'Poales-Arecales': 115,
+            'Poales-Liliales': 120,
+            'Poales-Zingiberales': 115,
+            
+            'Sapindales-Rosales': 110,
+            
+            // Familles dans les ordres
+            'Rosacées-Rosacées': 50,
+            'Solanacées-Solanacées': 40,
+            'Cucurbitacées-Cucurbitacées': 30,
+            'Fabacées-Fabacées': 50,
+            'Poacées-Poacées': 60,
+            'Rutacées-Rutacées': 10,
+            'Felidae-Felidae': 15,
+            'Canidae-Canidae': 10,
+            'Ursidae-Ursidae': 10,
+            'Hominidae-Hominidae': 14,
+            'Bovidae-Bovidae': 20,
+            'Equidae-Equidae': 4,
+            'Camelidae-Camelidae': 5,
+            'Muridae-Muridae': 12,
+            'Balaenopteridae-Delphinidae': 35,
+            'Phasianidae-Phasianidae': 25,
+            'Anatidae-Anatidae': 20,
+            'Pythonidae-Lacertidae': 150,
+            'Apidae-Formicidae': 150,
+            'Coccinellidae-Scarabaeidae': 200,
+            'Culicidae-Muscidae': 150,
+            'Araneidae-Buthidae': 430,
+            'Cancridae-Nephropidae': 200,
+            'Nephropidae-Penaeidae': 250,
+            'Octopodidae-Loliginidae': 270
+        };
+
+        let score = 0;
+        let total = 0;
+        let questionNumber = 1;
+        let currentQuestion = null;
+        let gameMode = 'all'; // 'plants', 'animals', 'all'
+        let availableOrganisms = [];
+        let difficulty = 'mixed'; // 'easy', 'medium', 'hard', 'mixed'
+
+        function startGame(mode) {
+            gameMode = mode;
+            
+            // Filtrer les organismes selon le mode
+            if (mode === 'plants') {
+                availableOrganisms = organisms.filter(o => 
+                    o.class === 'Angiospermes' || o.class === 'Gymnospermes'
+                );
+                document.getElementById('currentMode').textContent = '🌿 Mode : Plantes';
+            } else if (mode === 'animals') {
+                availableOrganisms = organisms.filter(o => 
+                    o.class === 'Mammalia' || o.class === 'Aves' || o.class === 'Reptilia' || 
+                    o.class === 'Amphibia' || o.class === 'Actinopterygii' || o.class === 'Chondrichthyes' ||
+                    o.class === 'Insecta' || o.class === 'Arachnida' || o.class === 'Malacostraca' ||
+                    o.class === 'Gastropoda' || o.class === 'Cephalopoda' || o.class === 'Anthozoa'
+                );
+                document.getElementById('currentMode').textContent = '🦁 Mode : Animaux';
+            } else {
+                availableOrganisms = organisms;
+                document.getElementById('currentMode').textContent = '🌍 Mode : Tout le vivant';
+            }
+            
+            // Réinitialiser les statistiques
+            score = 0;
+            total = 0;
+            questionNumber = 1;
+            
+            // Afficher le jeu
+            document.getElementById('modeSelection').style.display = 'none';
+            document.getElementById('gameContent').style.display = 'block';
+            
+            displayQuestion();
+        }
+        
+        function returnToMenu() {
+            document.getElementById('modeSelection').style.display = 'block';
+            document.getElementById('gameContent').style.display = 'none';
+            score = 0;
+            total = 0;
+            questionNumber = 1;
+        }
+
+        function getDivergenceTime(org1, org2) {
+            // Si même espèce
+            if (org1.species === org2.species) return 0;
+            
+            // Chercher dans les données
+            const key1 = `${org1.class}-${org2.class}`;
+            const key2 = `${org2.class}-${org1.class}`;
+            if (divergenceTimes[key1]) return divergenceTimes[key1];
+            if (divergenceTimes[key2]) return divergenceTimes[key2];
+            
+            const key3 = `${org1.order}-${org2.order}`;
+            const key4 = `${org2.order}-${org1.order}`;
+            if (divergenceTimes[key3]) return divergenceTimes[key3];
+            if (divergenceTimes[key4]) return divergenceTimes[key4];
+            
+            const key5 = `${org1.family}-${org2.family}`;
+            const key6 = `${org2.family}-${org1.family}`;
+            if (divergenceTimes[key5]) return divergenceTimes[key5];
+            if (divergenceTimes[key6]) return divergenceTimes[key6];
+            
+            // Par défaut estimation
+            if (org1.class !== org2.class) return 800;
+            if (org1.order !== org2.order) return 100;
+            if (org1.family !== org2.family) return 50;
+            return 20;
+        }
+
+        function generateQuestion() {
+            // Choisir une difficulté aléatoire pour varier les questions
+            const difficultyChoice = Math.random();
+            let selectedDifficulty;
+            
+            if (difficultyChoice < 0.25) {
+                selectedDifficulty = 'easy'; // 25% - différences de classe
+            } else if (difficultyChoice < 0.50) {
+                selectedDifficulty = 'medium'; // 25% - différences d'ordre
+            } else {
+                selectedDifficulty = 'hard'; // 50% - différences de famille ou genre
+            }
+            
+            let attempts = 0;
+            const maxAttempts = 100;
+            
+            while (attempts < maxAttempts) {
+                attempts++;
+                
+                // Sélectionner 3 organismes complètement aléatoirement
+                const shuffled = [...availableOrganisms].sort(() => Math.random() - 0.5);
+                
+                if (shuffled.length < 3) {
+                    alert("Pas assez d'organismes dans ce mode !");
+                    return null;
+                }
+                
+                const org1 = shuffled[0];
+                const org2 = shuffled[1];
+                const org3 = shuffled[2];
+                
+                // Vérifier qu'ils sont tous d'espèces différentes
+                if (org1.species === org2.species || org1.species === org3.species || org2.species === org3.species) {
+                    continue;
+                }
+                
+                // Calculer les distances
+                const dist12 = getDivergenceTime(org1, org2);
+                const dist13 = getDivergenceTime(org1, org3);
+                const dist23 = getDivergenceTime(org2, org3);
+                
+                // Trouver la paire la plus proche
+                let closePair, distantOrg, closeTime, distantTime1, distantTime2;
+                
+                if (dist12 <= dist13 && dist12 <= dist23) {
+                    closePair = [org1, org2];
+                    distantOrg = org3;
+                    closeTime = dist12;
+                    distantTime1 = dist13;
+                    distantTime2 = dist23;
+                } else if (dist13 <= dist12 && dist13 <= dist23) {
+                    closePair = [org1, org3];
+                    distantOrg = org2;
+                    closeTime = dist13;
+                    distantTime1 = dist12;
+                    distantTime2 = dist23;
+                } else {
+                    closePair = [org2, org3];
+                    distantOrg = org1;
+                    closeTime = dist23;
+                    distantTime1 = dist12;
+                    distantTime2 = dist13;
+                }
+                
+                const maxDistantTime = Math.max(distantTime1, distantTime2);
+                
+                // Vérifier que la question a du sens (la paire proche est vraiment plus proche)
+                if (closeTime >= maxDistantTime * 0.9) {
+                    continue; // Pas assez de différence
+                }
+                
+                // Filtrer selon la difficulté choisie
+                if (selectedDifficulty === 'easy') {
+                    // Facile : classes différentes (ex: mammifère vs insecte)
+                    if (closePair[0].class === closePair[1].class && 
+                        closePair[0].class === distantOrg.class) {
+                        continue; // Tous de la même classe, trop dur
+                    }
+                }
+                else if (selectedDifficulty === 'medium') {
+                    // Moyen : même classe mais ordres différents
+                    if (closePair[0].class !== closePair[1].class || 
+                        closePair[0].class !== distantOrg.class) {
+                        continue; // Pas de la même classe, trop facile
+                    }
+                    if (closePair[0].order === distantOrg.order || 
+                        closePair[1].order === distantOrg.order) {
+                        continue; // Même ordre, trop dur
+                    }
+                }
+                else { // hard
+                    // Difficile : même ordre ou même famille
+                    if (closePair[0].order !== closePair[1].order) {
+                        continue; // Ordres différents, pas assez dur
+                    }
+                    // On veut que ce soit délicat : même ordre pour les 3
+                    if (closePair[0].order !== distantOrg.order) {
+                        continue; // Pas du même ordre, pas assez dur
+                    }
+                }
+                
+                // Question valide trouvée !
+                const orgs = [org1, org2, org3].sort(() => Math.random() - 0.5);
+                
+                const choices = [
+                    { pair: [orgs[0], orgs[1]], text: `${orgs[0].emoji} ${orgs[0].name} et ${orgs[1].emoji} ${orgs[1].name}` },
+                    { pair: [orgs[0], orgs[2]], text: `${orgs[0].emoji} ${orgs[0].name} et ${orgs[2].emoji} ${orgs[2].name}` },
+                    { pair: [orgs[1], orgs[2]], text: `${orgs[1].emoji} ${orgs[1].name} et ${orgs[2].emoji} ${orgs[2].name}` }
+                ];
+                
+                return {
+                    organisms: orgs,
+                    choices: choices,
+                    correctPair: closePair,
+                    closeTime: closeTime,
+                    distantTime: maxDistantTime,
+                    difficulty: selectedDifficulty
+                };
+            }
+            
+            // Si on n'a pas réussi à générer une question après maxAttempts
+            // Revenir à l'ancienne méthode simple
+            return generateSimpleQuestion();
+        }
+        
+        function generateSimpleQuestion() {
+            // Méthode de secours : choisir 2 de la même famille, 1 différent
+            const groupedByFamily = {};
+            availableOrganisms.forEach(org => {
+                if (!groupedByFamily[org.family]) {
+                    groupedByFamily[org.family] = [];
+                }
+                groupedByFamily[org.family].push(org);
+            });
+            
+            const validFamilies = Object.keys(groupedByFamily).filter(family => {
+                const orgs = groupedByFamily[family];
+                const uniqueSpecies = new Set(orgs.map(o => o.species));
+                return uniqueSpecies.size >= 2;
+            });
+            
+            if (validFamilies.length === 0) {
+                alert("Pas assez d'organismes différents dans ce mode !");
+                return null;
+            }
+            
+            const closeFamily = validFamilies[Math.floor(Math.random() * validFamilies.length)];
+            const closeOrgs = groupedByFamily[closeFamily];
+            
+            let org1, org2;
+            let attempts = 0;
+            do {
+                org1 = closeOrgs[Math.floor(Math.random() * closeOrgs.length)];
+                org2 = closeOrgs[Math.floor(Math.random() * closeOrgs.length)];
+                attempts++;
+                if (attempts > 100) return null;
+            } while (org1.species === org2.species);
+            
+            let org3;
+            attempts = 0;
+            do {
+                org3 = availableOrganisms[Math.floor(Math.random() * availableOrganisms.length)];
+                attempts++;
+                if (attempts > 100) return null;
+            } while (org3.family === closeFamily);
+            
+            const orgs = [org1, org2, org3].sort(() => Math.random() - 0.5);
+            
+            const choices = [
+                { pair: [orgs[0], orgs[1]], text: `${orgs[0].emoji} ${orgs[0].name} et ${orgs[1].emoji} ${orgs[1].name}` },
+                { pair: [orgs[0], orgs[2]], text: `${orgs[0].emoji} ${orgs[0].name} et ${orgs[2].emoji} ${orgs[2].name}` },
+                { pair: [orgs[1], orgs[2]], text: `${orgs[1].emoji} ${orgs[1].name} et ${orgs[2].emoji} ${orgs[2].name}` }
+            ];
+            
+            return {
+                organisms: orgs,
+                choices: choices,
+                correctPair: [org1, org2],
+                closeTime: getDivergenceTime(org1, org2),
+                distantTime: Math.max(getDivergenceTime(org1, org3), getDivergenceTime(org2, org3)),
+                difficulty: 'easy'
+            };
+        }
+
+        function displayQuestion() {
+            currentQuestion = generateQuestion();
+            if (!currentQuestion) {
+                alert("Erreur lors de la génération de la question");
+                return;
+            }
+            
+            const organismsDiv = document.getElementById('organisms');
+            organismsDiv.innerHTML = currentQuestion.organisms
+                .map(org => `
+                    <div class="organism-box">
+                        <div class="organism">${org.emoji}</div>
+                        <div class="organism-label">${org.name}</div>
+                    </div>
+                `)
+                .join('');
+            
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = currentQuestion.choices
+                .map((choice, index) => 
+                    `<div class="choice" onclick="checkAnswer(${index})">${choice.text}</div>`
+                )
+                .join('');
+            
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('nextBtn').className = 'next-btn';
+            document.getElementById('questionNum').textContent = questionNumber;
+        }
+
+        function checkAnswer(choiceIndex) {
+            total++;
+            const choice = currentQuestion.choices[choiceIndex];
+            const isCorrect = (choice.pair[0].species === currentQuestion.correctPair[0].species && 
+                              choice.pair[1].species === currentQuestion.correctPair[1].species) ||
+                             (choice.pair[0].species === currentQuestion.correctPair[1].species && 
+                              choice.pair[1].species === currentQuestion.correctPair[0].species);
+            
+            if (isCorrect) score++;
+            
+            const choices = document.querySelectorAll('.choice');
+            choices.forEach((choiceEl, index) => {
+                choiceEl.classList.add('disabled');
+                const pair = currentQuestion.choices[index].pair;
+                const isThisCorrect = (pair[0].species === currentQuestion.correctPair[0].species && 
+                                      pair[1].species === currentQuestion.correctPair[1].species) ||
+                                     (pair[0].species === currentQuestion.correctPair[1].species && 
+                                      pair[1].species === currentQuestion.correctPair[0].species);
+                if (isThisCorrect) {
+                    choiceEl.classList.add('correct');
+                } else if (index === choiceIndex && !isCorrect) {
+                    choiceEl.classList.add('incorrect');
+                }
+            });
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            
+            const org1 = currentQuestion.correctPair[0];
+            const org2 = currentQuestion.correctPair[1];
+            
+            const wrongOrg = currentQuestion.organisms.find(o => 
+                o.species !== org1.species && o.species !== org2.species
+            );
+            
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <div class="feedback-title">✅ Excellente réponse !</div>
+                    <div class="feedback-content">
+                        <strong>${org1.emoji} ${org1.name}</strong> (<em>${org1.latin}</em>) et 
+                        <strong>${org2.emoji} ${org2.name}</strong> (<em>${org2.latin}</em>) 
+                        appartiennent tous deux à la famille des <strong>${org1.family}</strong>.
+                        
+                        <div class="time-info">
+                            ⏰ <strong>Divergence évolutive :</strong><br>
+                            • ${org1.name} et ${org2.name} ont divergé il y a environ 
+                            <span class="time-value">${currentQuestion.closeTime} millions d'années</span><br>
+                            • ${wrongOrg.name} (${wrongOrg.family}) a divergé il y a environ 
+                            <span class="time-value">${currentQuestion.distantTime} millions d'années</span>
+                        </div>
+                        
+                        <div class="taxonomy-info">
+                            Ces deux espèces partagent l'ordre ${org1.order}
+                        </div>
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="feedback-title">❌ Pas tout à fait...</div>
+                    <div class="feedback-content">
+                        La bonne réponse était <strong>${org1.emoji} ${org1.name}</strong> 
+                        et <strong>${org2.emoji} ${org2.name}</strong>.
+                        
+                        <div class="time-info">
+                            ⏰ <strong>Pourquoi ?</strong><br>
+                            • ${org1.name} et ${org2.name} appartiennent à la famille des <strong>${org1.family}</strong> 
+                            et ont divergé il y a seulement <span class="time-value">${currentQuestion.closeTime} millions d'années</span><br>
+                            • ${wrongOrg.name} appartient à la famille des <strong>${wrongOrg.family}</strong> 
+                            et s'est séparé il y a environ <span class="time-value">${currentQuestion.distantTime} millions d'années</span>
+                        </div>
+                        
+                        <div class="taxonomy-info">
+                            ${org1.latin} et ${org2.latin} partagent l'ordre ${org1.order}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = total;
+            
+            const percentage = Math.round((score / total) * 100);
+            document.getElementById('percentage').textContent = percentage + '%';
+            
+            document.getElementById('nextBtn').className = 'next-btn show';
+        }
+
+        function nextQuestion() {
+            questionNumber++;
+            displayQuestion();
+        }
+    </script>
+</body>
+</html>
