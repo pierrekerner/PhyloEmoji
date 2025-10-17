@@ -423,6 +423,7 @@
         let gameMode = 'all';
         let availableOrganisms = [];
         let askedQuestions = [];
+        let usedCorrectPairs = []; // Nouvelle variable pour suivre les paires correctes
         let maxQuestions = 10;
         let selectedGameMode = null;
 
@@ -522,16 +523,158 @@
         }
 
         function findCommonClade(org1, org2) {
+            // Même espèce
             if (org1.species === org2.species) return { level: 'espèce', name: org1.name };
+            
+            // Même genre
             if (org1.genus === org2.genus) return { level: 'genre', name: org1.genus };
+            
+            // Même famille
             if (org1.family === org2.family) return { level: 'famille', name: org1.family };
+            
+            // Même ordre
             if (org1.order === org2.order) return { level: 'ordre', name: org1.order };
+            
+            // CLADES DES MAMMIFÈRES (Boreoeutheria)
+            
+            // FERUNGULATA (Carnivores + Ongulés + Pholidotes + Chéiroptères)
+            const ferungulata = ['Carnivora', 'Artiodactyla', 'Perissodactyla', 'Cetacea'];
+            if (org1.class === 'Mammalia' && org2.class === 'Mammalia') {
+                if (ferungulata.includes(org1.order) && ferungulata.includes(org2.order)) {
+                    // Si un est Carnivore et l'autre Ongulé
+                    if (org1.order === 'Carnivora' && (org2.order === 'Artiodactyla' || org2.order === 'Perissodactyla' || org2.order === 'Cetacea')) {
+                        return { level: 'clade', name: 'Ferungulata' };
+                    }
+                    if (org2.order === 'Carnivora' && (org1.order === 'Artiodactyla' || org1.order === 'Perissodactyla' || org1.order === 'Cetacea')) {
+                        return { level: 'clade', name: 'Ferungulata' };
+                    }
+                    // Si les deux sont des ongulés
+                    if ((org1.order === 'Artiodactyla' || org1.order === 'Perissodactyla' || org1.order === 'Cetacea') &&
+                        (org2.order === 'Artiodactyla' || org2.order === 'Perissodactyla' || org2.order === 'Cetacea')) {
+                        return { level: 'clade', name: 'Ungulata (Ongulés)' };
+                    }
+                }
+                
+                // LAURASIATHERIA (Carnivores + Ongulés + Chéiroptères + Eulipotyphes)
+                const laurasiatheria = ['Carnivora', 'Artiodactyla', 'Perissodactyla', 'Cetacea', 'Chiroptera', 'Eulipotyphla'];
+                if (laurasiatheria.includes(org1.order) && laurasiatheria.includes(org2.order)) {
+                    return { level: 'super-ordre', name: 'Laurasiatheria' };
+                }
+                
+                // EUARCHONTOGLIRES (Primates + Rongeurs + Lagomorphes + Dermoptères + Scandentiens)
+                const euarchontoglires = ['Primates', 'Rodentia', 'Lagomorpha'];
+                if (euarchontoglires.includes(org1.order) && euarchontoglires.includes(org2.order)) {
+                    // GLIRES (Rongeurs + Lagomorphes)
+                    if ((org1.order === 'Rodentia' || org1.order === 'Lagomorpha') &&
+                        (org2.order === 'Rodentia' || org2.order === 'Lagomorpha')) {
+                        return { level: 'grand-ordre', name: 'Glires' };
+                    }
+                    // EUARCHONTOGLIRES
+                    return { level: 'super-ordre', name: 'Euarchontoglires' };
+                }
+                
+                // AFROTHERIA (Éléphants + Siréniens + Hyracoïdes + Macroscélidés + Afrosoricides + Tubulidentés)
+                const afrotheria = ['Proboscidea'];
+                if (afrotheria.includes(org1.order) && afrotheria.includes(org2.order)) {
+                    return { level: 'super-ordre', name: 'Afrotheria' };
+                }
+                
+                // Si Afrotheria vs Boreoeutheria
+                if ((afrotheria.includes(org1.order) && !afrotheria.includes(org2.order)) ||
+                    (afrotheria.includes(org2.order) && !afrotheria.includes(org1.order))) {
+                    return { level: 'infra-classe', name: 'Placentalia (Mammifères placentaires)' };
+                }
+            }
+            
+            // Même classe
             if (org1.class === org2.class) return { level: 'classe', name: org1.class };
-            return { level: 'règne', name: 'Eucaryotes' };
+            
+            // Cas spéciaux - Clades importants
+            
+            // ARCHOSAURES (Oiseaux + Crocodiliens)
+            if ((org1.class === 'Aves' && org2.order === 'Crocodilia') ||
+                (org2.class === 'Aves' && org1.order === 'Crocodilia')) {
+                return { level: 'clade', name: 'Archosaures' };
+            }
+            
+            // SAUROPSIDES (Oiseaux + Reptiles)
+            if ((org1.class === 'Aves' && org2.class === 'Reptilia') ||
+                (org2.class === 'Aves' && org1.class === 'Reptilia')) {
+                return { level: 'clade', name: 'Sauropsides' };
+            }
+            
+            // AMNIOTES (Mammifères + Oiseaux + Reptiles)
+            if ((org1.class === 'Mammalia' || org1.class === 'Aves' || org1.class === 'Reptilia') &&
+                (org2.class === 'Mammalia' || org2.class === 'Aves' || org2.class === 'Reptilia')) {
+                return { level: 'clade', name: 'Amniotes' };
+            }
+            
+            // TETRAPODES (Mammifères + Oiseaux + Reptiles + Amphibiens)
+            if ((org1.class === 'Mammalia' || org1.class === 'Aves' || org1.class === 'Reptilia' || org1.class === 'Amphibia') &&
+                (org2.class === 'Mammalia' || org2.class === 'Aves' || org2.class === 'Reptilia' || org2.class === 'Amphibia')) {
+                return { level: 'clade', name: 'Tétrapodes' };
+            }
+            
+            // VERTEBRES (tous les animaux avec colonne vertébrale)
+            const vertebrates = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes'];
+            if (vertebrates.includes(org1.class) && vertebrates.includes(org2.class)) {
+                return { level: 'embranchement', name: 'Vertébrés (Chordata)' };
+            }
+            
+            // ARTHROPODES
+            const arthropods = ['Insecta', 'Arachnida', 'Malacostraca'];
+            if (arthropods.includes(org1.class) && arthropods.includes(org2.class)) {
+                return { level: 'embranchement', name: 'Arthropodes' };
+            }
+            
+            // MOLLUSQUES
+            const mollusks = ['Gastropoda', 'Cephalopoda'];
+            if (mollusks.includes(org1.class) && mollusks.includes(org2.class)) {
+                return { level: 'embranchement', name: 'Mollusques' };
+            }
+            
+            // PROTOSTOMIENS (Arthropodes + Mollusques)
+            const protostomes = ['Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda'];
+            if (protostomes.includes(org1.class) && protostomes.includes(org2.class)) {
+                return { level: 'clade', name: 'Protostomiens' };
+            }
+            
+            // BILATÉRIENS (tous les animaux sauf Cnidaires et Éponges)
+            const bilaterians = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes',
+                                'Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda'];
+            if (bilaterians.includes(org1.class) && bilaterians.includes(org2.class)) {
+                return { level: 'clade', name: 'Bilatériens' };
+            }
+            
+            // METAZOAIRES (tous les animaux)
+            const animals = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes',
+                            'Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda', 'Anthozoa'];
+            if (animals.includes(org1.class) && animals.includes(org2.class)) {
+                return { level: 'règne', name: 'Métazoaires (Animaux)' };
+            }
+            
+            // PLANTES - Spermatophytes (plantes à graines)
+            if ((org1.class === 'Angiospermes' || org1.class === 'Gymnospermes') &&
+                (org2.class === 'Angiospermes' || org2.class === 'Gymnospermes')) {
+                return { level: 'clade', name: 'Spermatophytes (plantes à graines)' };
+            }
+            
+            // CHAMPIGNONS
+            if (org1.class === 'Fungi' && org2.class === 'Fungi') {
+                return { level: 'règne', name: 'Champignons (Fungi)' };
+            }
+            
+            // EUCARYOTES (tous)
+            return { level: 'domaine', name: 'Eucaryotes' };
         }
 
         function getQuestionSignature(org1, org2, org3) {
             const ids = [org1.species, org2.species, org3.species].sort();
+            return ids.join('|');
+        }
+
+        function getPairSignature(org1, org2) {
+            const ids = [org1.species, org2.species].sort();
             return ids.join('|');
         }
 
@@ -555,7 +698,8 @@
                 availableOrganisms = organisms.filter(o => 
                     o.class === 'Angiospermes' || o.class === 'Gymnospermes'
                 );
-                document.getElementById('currentMode').textContent = '🌿 Mode Plantes (' + numQuestions + ' questions)';
+                const modeEl = document.getElementById('currentMode');
+                if (modeEl) modeEl.textContent = '🌿 Mode Plantes (' + numQuestions + ' questions)';
             } else if (gameMode === 'animals') {
                 availableOrganisms = organisms.filter(o => 
                     o.class === 'Mammalia' || o.class === 'Aves' || o.class === 'Reptilia' || 
@@ -563,38 +707,73 @@
                     o.class === 'Insecta' || o.class === 'Arachnida' || o.class === 'Malacostraca' ||
                     o.class === 'Gastropoda' || o.class === 'Cephalopoda'
                 );
-                document.getElementById('currentMode').textContent = '🦁 Mode Animaux (' + numQuestions + ' questions)';
+                const modeEl = document.getElementById('currentMode');
+                if (modeEl) modeEl.textContent = '🦁 Mode Animaux (' + numQuestions + ' questions)';
             } else {
                 availableOrganisms = organisms;
-                document.getElementById('currentMode').textContent = '🌍 Mode Tout le vivant (' + numQuestions + ' questions)';
+                const modeEl = document.getElementById('currentMode');
+                if (modeEl) modeEl.textContent = '🌍 Mode Tout le vivant (' + numQuestions + ' questions)';
             }
             
             score = 0;
             total = 0;
             questionNumber = 1;
             askedQuestions = [];
+            usedCorrectPairs = []; // Réinitialiser aussi les paires utilisées
             
+            // Masquer les écrans de sélection
             document.getElementById('questionCountSelection').style.display = 'none';
             document.getElementById('gameContent').style.display = 'block';
-            document.getElementById('maxQuestions').textContent = maxQuestions;
+            
+            // Mettre à jour les affichages avec vérifications
+            const maxQEl = document.getElementById('maxQuestions');
+            if (maxQEl) maxQEl.textContent = maxQuestions;
+            
+            const scoreEl = document.getElementById('score');
+            if (scoreEl) scoreEl.textContent = '0';
+            
+            const totalEl = document.getElementById('total');
+            if (totalEl) totalEl.textContent = '0';
+            
+            const percentageEl = document.getElementById('percentage');
+            if (percentageEl) percentageEl.textContent = '-';
+            
+            const questionNumEl = document.getElementById('questionNum');
+            if (questionNumEl) questionNumEl.textContent = '1';
             
             displayQuestion();
         }
 
         function returnToMenu() {
-            document.getElementById('modeSelection').style.display = 'block';
-            document.getElementById('questionCountSelection').style.display = 'none';
-            document.getElementById('gameContent').style.display = 'none';
+            // Réinitialiser les variables
             score = 0;
             total = 0;
             questionNumber = 1;
             askedQuestions = [];
+            usedCorrectPairs = []; // Réinitialiser aussi les paires utilisées
             selectedGameMode = null;
+            currentQuestion = null;
+            
+            // Réinitialiser l'affichage
+            const scoreEl = document.getElementById('score');
+            const totalEl = document.getElementById('total');
+            const percentageEl = document.getElementById('percentage');
+            const questionNumEl = document.getElementById('questionNum');
+            
+            if (scoreEl) scoreEl.textContent = '0';
+            if (totalEl) totalEl.textContent = '0';
+            if (percentageEl) percentageEl.textContent = '-';
+            if (questionNumEl) questionNumEl.textContent = '1';
+            
+            // Afficher l'écran de sélection du mode
+            document.getElementById('modeSelection').style.display = 'block';
+            document.getElementById('questionCountSelection').style.display = 'none';
+            document.getElementById('gameContent').style.display = 'none';
         }
 
         function generateQuestion() {
             let attempts = 0;
-            const maxAttempts = 100;
+            const maxAttempts = 200; // Augmenter le nombre de tentatives
             
             while (attempts < maxAttempts) {
                 attempts++;
@@ -650,7 +829,15 @@
                     continue;
                 }
                 
+                // Vérifier si cette paire correcte a déjà été utilisée
+                const pairSignature = getPairSignature(closePair[0], closePair[1]);
+                if (usedCorrectPairs.includes(pairSignature)) {
+                    continue; // Cette paire a déjà été la bonne réponse, on cherche une autre combinaison
+                }
+                
+                // Marquer cette question et cette paire comme utilisées
                 askedQuestions.push(signature);
+                usedCorrectPairs.push(pairSignature);
                 
                 const orgs = [org1, org2, org3].sort(() => Math.random() - 0.5);
                 
@@ -669,6 +856,14 @@
                 };
             }
             
+            // Si on n'a pas trouvé de nouvelle question après maxAttempts
+            // On peut soit réinitialiser les paires utilisées, soit retourner null
+            if (usedCorrectPairs.length > 0 && attempts >= maxAttempts) {
+                // Réinitialiser et réessayer une fois
+                usedCorrectPairs = [];
+                return generateQuestion();
+            }
+            
             return null;
         }
 
@@ -685,25 +880,40 @@
             }
             
             const organismsDiv = document.getElementById('organisms');
-            organismsDiv.innerHTML = currentQuestion.organisms
-                .map(org => 
-                    '<div class="organism-box">' +
-                    '<div class="organism">' + org.emoji + '</div>' +
-                    '<div class="organism-label">' + org.name + '</div>' +
-                    '</div>'
-                )
-                .join('');
+            if (organismsDiv) {
+                organismsDiv.innerHTML = currentQuestion.organisms
+                    .map(org => 
+                        '<div class="organism-box">' +
+                        '<div class="organism">' + org.emoji + '</div>' +
+                        '<div class="organism-label">' + org.name + '</div>' +
+                        '</div>'
+                    )
+                    .join('');
+            }
             
             const choicesDiv = document.getElementById('choices');
-            choicesDiv.innerHTML = currentQuestion.choices
-                .map((choice, index) => 
-                    '<div class="choice" onclick="checkAnswer(' + index + ')">' + choice.text + '</div>'
-                )
-                .join('');
+            if (choicesDiv) {
+                choicesDiv.innerHTML = currentQuestion.choices
+                    .map((choice, index) => 
+                        '<div class="choice" onclick="checkAnswer(' + index + ')">' + choice.text + '</div>'
+                    )
+                    .join('');
+            }
             
-            document.getElementById('feedback').className = 'feedback';
-            document.getElementById('nextBtn').className = 'next-btn';
-            document.getElementById('questionNum').textContent = questionNumber;
+            const feedbackDiv = document.getElementById('feedback');
+            if (feedbackDiv) {
+                feedbackDiv.className = 'feedback';
+            }
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.className = 'next-btn';
+            }
+            
+            const questionNumEl = document.getElementById('questionNum');
+            if (questionNumEl) {
+                questionNumEl.textContent = questionNumber;
+            }
         }
 
         function checkAnswer(choiceIndex) {
@@ -732,7 +942,9 @@
             });
             
             const feedback = document.getElementById('feedback');
-            feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+            if (feedback) {
+                feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+            }
             
             const org1 = currentQuestion.correctPair[0];
             const org2 = currentQuestion.correctPair[1];
@@ -743,45 +955,52 @@
             
             const commonClade = findCommonClade(org1, org2);
             
-            if (isCorrect) {
-                feedback.innerHTML = 
-                    '<div class="feedback-title">✅ Excellente réponse !</div>' +
-                    '<div class="feedback-content">' +
-                    '<strong>' + org1.emoji + ' ' + org1.name + '</strong> (<em>' + org1.latin + '</em>) et ' +
-                    '<strong>' + org2.emoji + ' ' + org2.name + '</strong> (<em>' + org2.latin + '</em>) ' +
-                    'sont les deux espèces les plus proches.' +
-                    '<div class="time-info">' +
-                    '⏰ <strong>Divergence évolutive :</strong><br>' +
-                    '• Ces deux espèces partagent la <strong>' + commonClade.level + '</strong> des <strong>' + commonClade.name + '</strong><br>' +
-                    '• Elles ont divergé il y a environ <span class="time-value">' + currentQuestion.closeTime + ' millions d\'années</span><br>' +
-                    '• ' + wrongOrg.name + ' a divergé il y a environ <span class="time-value">' + currentQuestion.distantTime + ' millions d\'années</span>' +
-                    '</div>' +
-                    '</div>';
-            } else {
-                feedback.innerHTML = 
-                    '<div class="feedback-title">❌ Pas tout à fait...</div>' +
-                    '<div class="feedback-content">' +
-                    'La bonne réponse était <strong>' + org1.emoji + ' ' + org1.name + '</strong> ' +
-                    'et <strong>' + org2.emoji + ' ' + org2.name + '</strong>.' +
-                    '<div class="time-info">' +
-                    '⏰ <strong>Pourquoi ?</strong><br>' +
-                    '• Ces deux espèces partagent la <strong>' + commonClade.level + '</strong> des <strong>' + commonClade.name + '</strong><br>' +
-                    '• Elles ont divergé il y a seulement <span class="time-value">' + currentQuestion.closeTime + ' millions d\'années</span><br>' +
-                    '• ' + wrongOrg.name + ' s\'est séparé il y a environ <span class="time-value">' + currentQuestion.distantTime + ' millions d\'années</span>' +
-                    '</div>' +
-                    '<div class="taxonomy-info">' +
-                    org1.latin + ' et ' + org2.latin +
-                    '</div>' +
-                    '</div>';
+            if (feedback) {
+                if (isCorrect) {
+                    feedback.innerHTML = 
+                        '<div class="feedback-title">✅ Excellente réponse !</div>' +
+                        '<div class="feedback-content">' +
+                        '<strong>' + org1.emoji + ' ' + org1.name + '</strong> (<em>' + org1.latin + '</em>) et ' +
+                        '<strong>' + org2.emoji + ' ' + org2.name + '</strong> (<em>' + org2.latin + '</em>) ' +
+                        'sont les deux espèces les plus proches.' +
+                        '<div class="time-info">' +
+                        '⏰ <strong>Divergence évolutive :</strong><br>' +
+                        '• Ces deux espèces partagent la <strong>' + commonClade.level + '</strong> des <strong>' + commonClade.name + '</strong><br>' +
+                        '• Elles ont divergé il y a environ <span class="time-value">' + currentQuestion.closeTime + ' millions d\'années</span><br>' +
+                        '• ' + wrongOrg.name + ' a divergé il y a environ <span class="time-value">' + currentQuestion.distantTime + ' millions d\'années</span>' +
+                        '</div>' +
+                        '</div>';
+                } else {
+                    feedback.innerHTML = 
+                        '<div class="feedback-title">❌ Pas tout à fait...</div>' +
+                        '<div class="feedback-content">' +
+                        'La bonne réponse était <strong>' + org1.emoji + ' ' + org1.name + '</strong> ' +
+                        'et <strong>' + org2.emoji + ' ' + org2.name + '</strong>.' +
+                        '<div class="time-info">' +
+                        '⏰ <strong>Pourquoi ?</strong><br>' +
+                        '• Ces deux espèces partagent la <strong>' + commonClade.level + '</strong> des <strong>' + commonClade.name + '</strong><br>' +
+                        '• Elles ont divergé il y a seulement <span class="time-value">' + currentQuestion.closeTime + ' millions d\'années</span><br>' +
+                        '• ' + wrongOrg.name + ' s\'est séparé il y a environ <span class="time-value">' + currentQuestion.distantTime + ' millions d\'années</span>' +
+                        '</div>' +
+                        '<div class="taxonomy-info">' +
+                        org1.latin + ' et ' + org2.latin +
+                        '</div>' +
+                        '</div>';
+                }
             }
             
-            document.getElementById('score').textContent = score;
-            document.getElementById('total').textContent = total;
+            const scoreEl = document.getElementById('score');
+            if (scoreEl) scoreEl.textContent = score;
+            
+            const totalEl = document.getElementById('total');
+            if (totalEl) totalEl.textContent = total;
             
             const percentage = Math.round((score / total) * 100);
-            document.getElementById('percentage').textContent = percentage + '%';
+            const percentageEl = document.getElementById('percentage');
+            if (percentageEl) percentageEl.textContent = percentage + '%';
             
-            document.getElementById('nextBtn').className = 'next-btn show';
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) nextBtn.className = 'next-btn show';
         }
 
         function nextQuestion() {
@@ -811,22 +1030,43 @@
                 message = 'Continue à t\'entraîner, tu vas progresser !';
             }
             
-            document.getElementById('organisms').innerHTML = 
-                '<div style="text-align: center; width: 100%;">' +
-                '<div style="font-size: 6em; margin-bottom: 20px;">' + emoji + '</div>' +
-                '<h2 style="font-size: 2em; margin-bottom: 20px;">Session terminée !</h2>' +
-                '<p style="font-size: 1.5em; margin-bottom: 10px;">Score final : <strong>' + score + ' / ' + total + '</strong></p>' +
-                '<p style="font-size: 1.3em; color: #667eea; margin-bottom: 30px;"><strong>' + percentage + '%</strong></p>' +
-                '<p style="font-size: 1.2em; color: #666;">' + message + '</p>' +
-                '</div>';
+            const organismsDiv = document.getElementById('organisms');
+            if (organismsDiv) {
+                organismsDiv.innerHTML = 
+                    '<div style="text-align: center; width: 100%;">' +
+                    '<div style="font-size: 6em; margin-bottom: 20px;">' + emoji + '</div>' +
+                    '<h2 style="font-size: 2em; margin-bottom: 20px;">Session terminée !</h2>' +
+                    '<p style="font-size: 1.5em; margin-bottom: 10px;">Score final : <strong>' + score + ' / ' + total + '</strong></p>' +
+                    '<p style="font-size: 1.3em; color: #667eea; margin-bottom: 30px;"><strong>' + percentage + '%</strong></p>' +
+                    '<p style="font-size: 1.2em; color: #666;">' + message + '</p>' +
+                    '</div>';
+            }
             
-            document.getElementById('choices').innerHTML = '';
-            document.getElementById('feedback').className = 'feedback';
-            document.getElementById('nextBtn').className = 'next-btn';
-            document.querySelector('.question').innerHTML = '<strong>Merci d\'avoir joué !</strong><br>Voulez-vous recommencer ?';
+            const choicesDiv = document.getElementById('choices');
+            if (choicesDiv) {
+                choicesDiv.innerHTML = '';
+            }
             
-            document.querySelector('.game-mode-indicator').innerHTML = 
-                '<button class="change-mode-btn" onclick="returnToMenu()">🔄 Nouvelle session</button>';
+            const feedbackDiv = document.getElementById('feedback');
+            if (feedbackDiv) {
+                feedbackDiv.className = 'feedback';
+            }
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.className = 'next-btn';
+            }
+            
+            const questionDiv = document.querySelector('.question');
+            if (questionDiv) {
+                questionDiv.innerHTML = '<strong>Merci d\'avoir joué !</strong><br>Voulez-vous recommencer ?';
+            }
+            
+            const modeIndicator = document.querySelector('.game-mode-indicator');
+            if (modeIndicator) {
+                modeIndicator.innerHTML = 
+                    '<button class="change-mode-btn" onclick="returnToMenu()" style="margin: 0 auto;">🔄 Nouvelle session</button>';
+            }
         }
     </script>
 </body>
