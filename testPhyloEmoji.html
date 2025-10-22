@@ -419,66 +419,176 @@
             availableOrganisms = [], askedQuestions = [], usedCorrectPairs = [],
             maxQuestions = 10, selectedGameMode = null;
 
-        const organisms = [
-            { emoji: '🍎', name: 'Pomme', gender: 'f', latin: 'Malus domestica', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Malus', genus: 'Malus' },
-            { emoji: '🍐', name: 'Poire', gender: 'f', latin: 'Pyrus communis', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Pyrus', genus: 'Pyrus' },
-            { emoji: '🍑', name: 'Pêche', gender: 'f', latin: 'Prunus persica', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Prunus-peche', genus: 'Prunus' },
-            { emoji: '🍒', name: 'Cerise', gender: 'f', latin: 'Prunus avium', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Prunus-cerise', genus: 'Prunus' },
-            { emoji: '🍓', name: 'Fraise', gender: 'f', latin: 'Fragaria ananassa', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Fragaria', genus: 'Fragaria' },
-            { emoji: '🌹', name: 'Rose', gender: 'f', latin: 'Rosa spp.', family: 'Rosaceae', order: 'Rosales', class: 'Angiospermes', species: 'Rosa', genus: 'Rosa' },
-            { emoji: '🍅', name: 'Tomate', gender: 'f', latin: 'Solanum lycopersicum', family: 'Solanaceae', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-tomate', genus: 'Solanum' },
-            { emoji: '🍆', name: 'Aubergine', gender: 'f', latin: 'Solanum melongena', family: 'Solanaceae', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-aubergine', genus: 'Solanum' },
-            { emoji: '🥔', name: 'Pomme de terre', gender: 'f', latin: 'Solanum tuberosum', family: 'Solanaceae', order: 'Solanales', class: 'Angiospermes', species: 'Solanum-pomme', genus: 'Solanum' },
-            { emoji: '🌽', name: 'Maïs', gender: 'm', latin: 'Zea mays', family: 'Poaceae', order: 'Poales', class: 'Angiospermes', species: 'Zea', genus: 'Zea' },
-            { emoji: '🌾', name: 'Riz', gender: 'm', latin: 'Oryza sativa', family: 'Poaceae', order: 'Poales', class: 'Angiospermes', species: 'Oryza', genus: 'Oryza' },
-            { emoji: '🌲', name: 'Conifère', gender: 'm', latin: 'Pinus spp.', family: 'Pinaceae', order: 'Pinales', class: 'Gymnospermes', species: 'Pinus', genus: 'Pinus' },
-            { emoji: '🐱', name: 'Chat domestique', gender: 'm', latin: 'Felis catus', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Felis', genus: 'Felis' },
-            { emoji: '🦁', name: 'Lion', gender: 'm', latin: 'Panthera leo', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Panthera-lion', genus: 'Panthera' },
-            { emoji: '🐯', name: 'Tigre', gender: 'm', latin: 'Panthera tigris', family: 'Felidae', order: 'Carnivora', class: 'Mammalia', species: 'Panthera-tigre', genus: 'Panthera' },
-            { emoji: '🐶', name: 'Chien domestique', gender: 'm', latin: 'Canis familiaris', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Canis-chien', genus: 'Canis' },
-            { emoji: '🐺', name: 'Loup gris', gender: 'm', latin: 'Canis lupus', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Canis-loup', genus: 'Canis' },
-            { emoji: '🦊', name: 'Renard roux', gender: 'm', latin: 'Vulpes vulpes', family: 'Canidae', order: 'Carnivora', class: 'Mammalia', species: 'Vulpes', genus: 'Vulpes' },
-            { emoji: '🐻', name: 'Ours brun', gender: 'm', latin: 'Ursus arctos', family: 'Ursidae', order: 'Carnivora', class: 'Mammalia', species: 'Ursus', genus: 'Ursus' },
-            { emoji: '🐼', name: 'Panda géant', gender: 'm', latin: 'Ailuropoda melanoleuca', family: 'Ursidae', order: 'Carnivora', class: 'Mammalia', species: 'Ailuropoda', genus: 'Ailuropoda' },
-            { emoji: '🐘', name: 'Éléphant d\'Afrique', gender: 'm', latin: 'Loxodonta africana', family: 'Elephantidae', order: 'Proboscidea', class: 'Mammalia', species: 'Loxodonta', genus: 'Loxodonta' },
-            { emoji: '🐴', name: 'Cheval domestique', gender: 'm', latin: 'Equus caballus', family: 'Equidae', order: 'Perissodactyla', class: 'Mammalia', species: 'Equus-cheval', genus: 'Equus' },
-            { emoji: '🦓', name: 'Zèbre', gender: 'm', latin: 'Equus quagga', family: 'Equidae', order: 'Perissodactyla', class: 'Mammalia', species: 'Equus-zebre', genus: 'Equus' },
-            { emoji: '🐮', name: 'Vache domestique', gender: 'f', latin: 'Bos taurus', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Bos', genus: 'Bos' },
-            { emoji: '🐐', name: 'Chèvre domestique', gender: 'f', latin: 'Capra hircus', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Capra', genus: 'Capra' },
-            { emoji: '🐑', name: 'Mouton domestique', gender: 'm', latin: 'Ovis aries', family: 'Bovidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Ovis', genus: 'Ovis' },
-            { emoji: '🐭', name: 'Souris domestique', gender: 'f', latin: 'Mus musculus', family: 'Muridae', order: 'Rodentia', class: 'Mammalia', species: 'Mus', genus: 'Mus' },
-            { emoji: '🐀', name: 'Rat surmulot', gender: 'm', latin: 'Rattus norvegicus', family: 'Muridae', order: 'Rodentia', class: 'Mammalia', species: 'Rattus', genus: 'Rattus' },
-            { emoji: '🐰', name: 'Lapin de garenne', gender: 'm', latin: 'Oryctolagus cuniculus', family: 'Leporidae', order: 'Lagomorpha', class: 'Mammalia', species: 'Oryctolagus', genus: 'Oryctolagus' },
-            { emoji: '🐔', name: 'Poule domestique', gender: 'f', latin: 'Gallus gallus', family: 'Phasianidae', order: 'Galliformes', class: 'Aves', species: 'Gallus', genus: 'Gallus' },
-            { emoji: '🦆', name: 'Canard colvert', gender: 'm', latin: 'Anas platyrhynchos', family: 'Anatidae', order: 'Anseriformes', class: 'Aves', species: 'Anas', genus: 'Anas' },
-            { emoji: '🦅', name: 'Aigle royal', gender: 'm', latin: 'Aquila chrysaetos', family: 'Accipitridae', order: 'Accipitriformes', class: 'Aves', species: 'Aquila', genus: 'Aquila' },
-            { emoji: '🐊', name: 'Crocodile du Nil', gender: 'm', latin: 'Crocodylus niloticus', family: 'Crocodylidae', order: 'Crocodilia', class: 'Reptilia', species: 'Crocodylus', genus: 'Crocodylus' },
-            { emoji: '🐍', name: 'Python réticulé', gender: 'm', latin: 'Python reticulatus', family: 'Pythonidae', order: 'Squamata', class: 'Reptilia', species: 'Python', genus: 'Python' },
-            { emoji: '🦎', name: 'Lézard des murailles', gender: 'm', latin: 'Podarcis muralis', family: 'Lacertidae', order: 'Squamata', class: 'Reptilia', species: 'Podarcis', genus: 'Podarcis' },
-            { emoji: '🐸', name: 'Grenouille rousse', gender: 'f', latin: 'Rana temporaria', family: 'Ranidae', order: 'Anura', class: 'Amphibia', species: 'Rana', genus: 'Rana' },
-            { emoji: '🐟', name: 'Poisson-zèbre', gender: 'm', latin: 'Danio rerio', family: 'Cyprinidae', order: 'Cypriniformes', class: 'Actinopterygii', species: 'Danio', genus: 'Danio' },
-            { emoji: '🦈', name: 'Grand requin blanc', gender: 'm', latin: 'Carcharodon carcharias', family: 'Lamnidae', order: 'Lamniformes', class: 'Chondrichthyes', species: 'Carcharodon', genus: 'Carcharodon' },
-            { emoji: '🦋', name: 'Monarque', gender: 'm', latin: 'Danaus plexippus', family: 'Nymphalidae', order: 'Lepidoptera', class: 'Insecta', species: 'Danaus', genus: 'Danaus' },
-            { emoji: '🐝', name: 'Abeille mellifère', gender: 'f', latin: 'Apis mellifera', family: 'Apidae', order: 'Hymenoptera', class: 'Insecta', species: 'Apis', genus: 'Apis' },
-            { emoji: '🐜', name: 'Fourmi rousse', gender: 'f', latin: 'Formica rufa', family: 'Formicidae', order: 'Hymenoptera', class: 'Insecta', species: 'Formica', genus: 'Formica' },
-            { emoji: '🐞', name: 'Coccinelle', gender: 'f', latin: 'Coccinella septempunctata', family: 'Coccinellidae', order: 'Coleoptera', class: 'Insecta', species: 'Coccinella', genus: 'Coccinella' },
-            { emoji: '🕷️', name: 'Araignée épeire', gender: 'f', latin: 'Araneus diadematus', family: 'Araneidae', order: 'Araneae', class: 'Arachnida', species: 'Araneus', genus: 'Araneus' },
-            { emoji: '🦂', name: 'Scorpion', gender: 'm', latin: 'Centruroides sculpturatus', family: 'Buthidae', order: 'Scorpiones', class: 'Arachnida', species: 'Centruroides', genus: 'Centruroides' },
-            { emoji: '🦀', name: 'Tourteau', gender: 'm', latin: 'Cancer pagurus', family: 'Cancridae', order: 'Decapoda', class: 'Malacostraca', species: 'Cancer', genus: 'Cancer' },
-            { emoji: '🦞', name: 'Homard américain', gender: 'm', latin: 'Homarus americanus', family: 'Nephropidae', order: 'Decapoda', class: 'Malacostraca', species: 'Homarus', genus: 'Homarus' },
-            { emoji: '🐌', name: 'Escargot de Bourgogne', gender: 'm', latin: 'Helix pomatia', family: 'Helicidae', order: 'Stylommatophora', class: 'Gastropoda', species: 'Helix', genus: 'Helix' },
-            { emoji: '🐙', name: 'Pieuvre commune', gender: 'f', latin: 'Octopus vulgaris', family: 'Octopodidae', order: 'Octopoda', class: 'Cephalopoda', species: 'Octopus', genus: 'Octopus' },
-            { emoji: '🍄', name: 'Champignon de Paris', gender: 'm', latin: 'Agaricus bisporus', family: 'Agaricaceae', order: 'Agaricales', class: 'Fungi', species: 'Agaricus', genus: 'Agaricus' }
-        ];
+const organisms = [
+            // Chaque organisme a un tableau `clades` listant son chemin phylogénétique complet
+            // pour une détermination systématique du plus petit clade commun.
 
-        const divergenceTimes = {
-            'Mammalia-Aves': 320, 'Mammalia-Reptilia': 320, 'Mammalia-Amphibia': 360,
-            'Mammalia-Actinopterygii': 435, 'Mammalia-Insecta': 750, 'Mammalia-Arachnida': 750,
-            'Aves-Reptilia': 255, 'Carnivora-Artiodactyla': 86, 'Carnivora-Rodentia': 92,
-            'Felidae-Canidae': 52, 'Felidae-Ursidae': 52, 'Rosales-Solanales': 110, 'Rosales-Poales': 120
-        };
-        
-        // Gère l'article grammatical pour le nom d'un organisme
+            // BACTÉRIE
+            { emoji: '🦠', name: 'Microbe', gender: 'm', latin: 'Escherichia coli', clades: ['Prokaryota', 'Bacteria', 'Escherichia coli'] },
+            
+            // PLANTES
+            { emoji: '🌿', name: 'Scolopendre', gender: 'f', latin: 'Asplenium scolopendrium', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Filicopsida', 'Asplenium scolopendrium'] },
+            { emoji: '🌲', name: 'Conifère', gender: 'm', latin: 'Pinus spp.', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Gymnospermae', 'Pinus spp.'] },
+            { emoji: '🥑', name: 'Avocat', gender: 'm', latin: 'Persea americana', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Magnoliids', 'Persea americana'] },
+            { emoji: '🌷', name: 'Tulipe', gender: 'f', latin: 'Tulipa spp.', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Liliales', 'Tulipa spp.'] },
+            { emoji: '🧄', name: 'Ail', gender: 'm', latin: 'Allium sativum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Asparagales', 'Allium', 'Allium sativum'] },
+            { emoji: '🧅', name: 'Oignon', gender: 'm', latin: 'Allium cepa', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Asparagales', 'Allium', 'Allium cepa'] },
+            { emoji: '🌴', name: 'Palmier', gender: 'm', latin: 'Phoenix dactylifera', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Arecales', 'Arecaceae', 'Phoenix dactylifera'] },
+            { emoji: '🥥', name: 'Noix de Coco', gender: 'f', latin: 'Cocos nucifera', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Arecales', 'Arecaceae', 'Cocos nucifera'] },
+            { emoji: '🍌', name: 'Banane', gender: 'f', latin: 'Musa spp.', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Zingiberales', 'Musa spp.'] },
+            { emoji: '🍍', name: 'Ananas', gender: 'm', latin: 'Ananas comosus', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Poales', 'Bromeliaceae', 'Ananas comosus'] },
+            { emoji: '🌽', name: 'Maïs', gender: 'm', latin: 'Zea mays', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Poales', 'Poaceae', 'Panicoideae', 'Zea mays'] },
+            { emoji: '🎋', name: 'Bambou', latin: 'Phyllostachys viridiglaucescens', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Poales', 'Poaceae', 'Bambusoideae', 'Phyllostachys viridiglaucescens'] },
+            { emoji: '🌾', name: 'Riz', gender: 'm', latin: 'Oryza sativa', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Monocotyledoneae', 'Commelinids', 'Poales', 'Poaceae', 'Bambusoideae', 'Oryza sativa'] },
+            { emoji: '🪷', name: 'Lotus', gender: 'm', latin: 'Nelumbo nucifera', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Proteales', 'Nelumbo nucifera'] },
+            { emoji: '🍇', name: 'Raisin', gender: 'm', latin: 'Vitis vinifera', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Vitales', 'Vitis vinifera'] },
+            { emoji: '🥜', name: 'Cacahuète', gender: 'f', latin: 'Arachis hypogaea', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Fabales', 'Fabaceae', 'Arachis hypogaea'] },
+            { emoji: '🫘', name: 'Haricots', gender: 'm', latin: 'Phaseolus vulgaris', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Fabales', 'Fabaceae', 'Phaseolus vulgaris'] },
+            { emoji: '☘️', name: 'Trèfle', gender: 'm', latin: 'Trifolium spp.', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Fabales', 'Fabaceae', 'Trifolium spp.'] },
+            { emoji: '🌹', name: 'Rose', gender: 'f', latin: 'Rosa spp.', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Rosoideae', 'Rosa spp.'] },
+            { emoji: '🍓', name: 'Fraise', gender: 'f', latin: 'Fragaria ananassa', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Rosoideae', 'Fragaria ananassa'] },
+            { emoji: '🍎', name: 'Pomme', gender: 'f', latin: 'Malus domestica', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Amygdaloideae', 'Maleae', 'Malus domestica'] },
+            { emoji: '🍐', name: 'Poire', gender: 'f', latin: 'Pyrus communis', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Amygdaloideae', 'Maleae', 'Pyrus communis'] },
+            { emoji: '🍑', name: 'Pêche', gender: 'f', latin: 'Prunus persica', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Amygdaloideae', 'Amygdaleae', 'Prunus persica'] },
+            { emoji: '🍒', name: 'Cerise', gender: 'f', latin: 'Prunus avium', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Rosales', 'Rosaceae', 'Amygdaloideae', 'Amygdaleae', 'Prunus avium'] },
+            { emoji: '🌰', name: 'Châtaigne', gender: 'f', latin: 'Castanea sativa', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Fagales', 'Castanea sativa'] },
+            { emoji: '🎃', name: 'Citrouille', gender: 'f', latin: 'Cucurbita pepo', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Cucurbitales', 'Cucurbitaceae', 'Cucurbita pepo'] },
+            { emoji: '🍉', name: 'Pastèque', gender: 'f', latin: 'Citrullus lanatus', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Cucurbitales', 'Cucurbitaceae', 'Citrullus lanatus'] },
+            { emoji: '🥒', name: 'Concombre', gender: 'm', latin: 'Cucumis sativus', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Cucurbitales', 'Cucurbitaceae', 'Cucumis', 'Cucumis sativus'] },
+            { emoji: '🍈', name: 'Melon', latin: 'Cucumis melo', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Fabids', 'Cucurbitales', 'Cucurbitaceae', 'Cucumis', 'Cucumis melo'] },
+            { emoji: '🥦', name: 'Brocoli', gender: 'm', latin: 'Brassica oleracea', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Brassicales', 'Brassicaceae', 'Brassica oleracea'] },
+            { emoji: '🥬', name: 'Chou vert', gender: 'm', latin: 'Brassica oleracea var. acephala', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Brassicales', 'Brassicaceae', 'Brassica oleracea var. acephala'] },
+            { emoji: '🥭', name: 'Mangue', gender: 'f', latin: 'Mangifera indica', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Sapindales', 'Anacardiaceae', 'Mangifera indica'] },
+            { emoji: '🍊', name: 'Mandarine', gender: 'f', latin: 'Citrus reticulata', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Sapindales', 'Rutaceae', 'Citrus reticulata'] },
+            { emoji: '🍋', name: 'Citron', gender: 'm', latin: 'Citrus limon', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Sapindales', 'Rutaceae', 'Citrus limon'] },
+            { emoji: '🍁', name: 'Érable', gender: 'm', latin: 'Acer saccharum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superrosids', 'Rosids', 'Malvids', 'Sapindales', 'Sapindaceae', 'Acer saccharum'] },
+            { emoji: '🌵', name: 'Cactus', gender: 'm', latin: 'Cactaceae', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Caryophyllales', 'Cactaceae'] },
+            { emoji: '🥝', name: 'Kiwi', gender: 'm', latin: 'Actinidia deliciosa', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Ericales', 'Actinidiaceae', 'Actinidia deliciosa'] },
+            { emoji: '🫐', name: 'Myrtilles', gender: 'f', latin: 'Vaccinium corymbosum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Ericales', 'Ericaceae', 'Vaccinium corymbosum'] },
+            { emoji: '🫒', name: 'Olive', gender: 'f', latin: 'Olea europaea', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Lamiales', 'Olea europaea'] },
+            { emoji: '🍠', name: 'Patate douce', gender: 'f', latin: 'Ipomoea batatas', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Solanales', 'Convolvulaceae', 'Ipomoea batatas'] },
+            { emoji: '🌶️', name: 'Piment', gender: 'm', latin: 'Capsicum annuum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Solanales', 'Solanaceae', 'Capsicum annuum'] },
+            { emoji: '🍆', name: 'Aubergine', gender: 'f', latin: 'Solanum melongena', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Solanales', 'Solanaceae', 'Solanum', 'Solanum melongena'] },
+            { emoji: '🥔', name: 'Pomme de terre', gender: 'f', latin: 'Solanum tuberosum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Solanales', 'Solanaceae', 'Solanum', 'Solanum tuberosum'] },
+            { emoji: '🍅', name: 'Tomate', gender: 'f', latin: 'Solanum lycopersicum', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Lamiids', 'Solanales', 'Solanaceae', 'Solanum', 'Solanum lycopersicum'] },
+            { emoji: '🥕', name: 'Carotte', gender: 'f', latin: 'Daucus carota', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Campanulids', 'Apiales', 'Daucus carota'] },
+            { emoji: '🌻', name: 'Tournesol', gender: 'm', latin: 'Helianthus annuus', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Campanulids', 'Asterales', 'Asteraceae', 'Helianthus annuus'] },
+            { emoji: '🌼', name: 'Fleur', gender: 'f', latin: 'Bellis perennis', clades: ['Eukaryota', 'Plantae', 'Tracheophyta', 'Spermatophyta', 'Angiospermae', 'Eudicotyledoneae', 'Superasterids', 'Asterids', 'Campanulids', 'Asterales', 'Asteraceae', 'Bellis perennis'] },
+
+            // CHAMPIGNONS
+            { emoji: '🍄', name: 'Champignon de Paris', gender: 'm', latin: 'Agaricus bisporus', clades: ['Eukaryota', 'Opisthokonta', 'Fungi', 'Agaricus bisporus'] },
+            { emoji: '🍺', name: 'Levure de bière', gender: 'f', latin: 'Saccharomyces cerevisiae', clades: ['Eukaryota', 'Opisthokonta', 'Fungi', 'Saccharomyces cerevisiae'] },
+            
+            // ANIMAUX
+            { emoji: '🧽', name: 'Éponge de mer', gender: 'f', latin: 'Spongia officinalis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Porifera', 'Spongia officinalis'] },
+            { emoji: '🪸', name: 'Corail', gender: 'm', latin: 'Corallium rubrum', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Cnidaria', 'Corallium rubrum'] },
+            
+            // Protostomiens
+            { emoji: '🐙', name: 'Pieuvre commune', gender: 'f', latin: 'Octopus vulgaris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Mollusca', 'Cephalopoda', 'Octopus vulgaris'] },
+            { emoji: '🦑', name: 'Calmar', gender: 'm', latin: 'Loligo vulgaris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Mollusca', 'Cephalopoda', 'Loligo vulgaris'] },
+            { emoji: '🦪', name: 'Huître', gender: 'f', latin: 'Crassostrea gigas', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Mollusca', 'Bivalvia', 'Crassostrea gigas'] },
+            { emoji: '🐌', name: 'Escargot de Bourgogne', gender: 'm', latin: 'Helix pomatia', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Mollusca', 'Gastropoda', 'Helix pomatia'] },
+            { emoji: '🐚', name: 'Cône', gender: 'm', latin: 'Conus spp.', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Mollusca', 'Gastropoda', 'Conus spp.'] },
+            { emoji: '🪱', name: 'Ver de terre', gender: 'm', latin: 'Lumbricus terrestris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Lophotrochozoa', 'Annelida', 'Lumbricus terrestris'] },
+            { emoji: '🕷️', name: 'Araignée épeire', gender: 'f', latin: 'Araneus diadematus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Chelicerata', 'Arachnida', 'Araneus diadematus'] },
+            { emoji: '🦂', name: 'Scorpion', gender: 'm', latin: 'Centruroides sculpturatus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Chelicerata', 'Arachnida', 'Centruroides sculpturatus'] },
+            { emoji: '🦐', name: 'Crevette', gender: 'f', latin: 'Penaeus monodon', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Crustacea', 'Decapoda', 'Penaeus monodon'] },
+            { emoji: '🦀', name: 'Tourteau', gender: 'm', latin: 'Cancer pagurus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Crustacea', 'Decapoda', 'Brachyura', 'Cancer pagurus'] },
+            { emoji: '🦞', name: 'Homard américain', gender: 'm', latin: 'Homarus americanus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Crustacea', 'Decapoda', 'Brachyura', 'Homarus americanus'] },
+            { emoji: '🦗', name: 'Grillon', gender: 'm', latin: 'Gryllus campestris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Orthoptera', 'Gryllus campestris'] },
+            { emoji: '🪳', name: 'Cafard', gender: 'm', latin: 'Blatta orientalis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Blattodea', 'Blatta orientalis'] },
+            { emoji: '🐝', name: 'Abeille mellifère', gender: 'f', latin: 'Apis mellifera', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Hymenoptera', 'Apis mellifera'] },
+            { emoji: '🐜', name: 'Fourmi rousse', gender: 'f', latin: 'Formica rufa', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Hymenoptera', 'Formica rufa'] },
+            { emoji: '🪲', name: 'Scarabée', gender: 'm', latin: 'Scarabaeus sacer', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Coleoptera', 'Scarabaeus sacer'] },
+            { emoji: '🐞', name: 'Coccinelle', gender: 'f', latin: 'Coccinella septempunctata', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Coleoptera', 'Coccinella septempunctata'] },
+            { emoji: '🦋', name: 'Monarque', gender: 'm', latin: 'Danaus plexippus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Lepidoptera', 'Danaus plexippus'] },
+            { emoji: '🦟', name: 'Moustique', gender: 'm', latin: 'Anopheles gambiae', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Diptera', 'Anopheles gambiae'] },
+            { emoji: '🪰', name: 'Mouche', gender: 'f', latin: 'Musca domestica', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Protostomia', 'Ecdysozoa', 'Arthropoda', 'Insecta', 'Neoptera', 'Diptera', 'Musca domestica'] },
+
+            // Deutérostomiens
+            { emoji: '⭐', name: 'Étoile de mer', gender: 'f', latin: 'Asterias rubens', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Echinodermata', 'Asterias rubens'] },
+            { emoji: '🦈', name: 'Grand requin blanc', gender: 'm', latin: 'Carcharodon carcharias', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Chondrichthyes', 'Carcharodon carcharias'] },
+            { emoji: '🐟', name: 'Poisson-zèbre', gender: 'm', latin: 'Danio rerio', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Actinopterygii', 'Ostariophysi', 'Danio rerio'] },
+            { emoji: '🐠', name: 'Poisson tropical', gender: 'm', latin: 'Pomacanthus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Actinopterygii', 'Acanthopterygii', 'Pomacanthus'] },
+            { emoji: '🐡', name: 'Poisson-ballon', gender: 'm', latin: 'Tetraodon nigroviridis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Actinopterygii', 'Acanthopterygii', 'Tetraodon nigroviridis'] },
+            { emoji: '🐸', name: 'Grenouille rousse', gender: 'f', latin: 'Rana temporaria', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amphibia', 'Rana temporaria'] },
+            { emoji: '🐍', name: 'Python réticulé', gender: 'm', latin: 'Python reticulatus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Lepidosauria', 'Squamata', 'Python reticulatus'] },
+            { emoji: '🦎', name: 'Lézard des murailles', gender: 'm', latin: 'Podarcis muralis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Lepidosauria', 'Squamata', 'Podarcis muralis'] },
+            { emoji: '🐢', name: 'Tortue', gender: 'f', latin: 'Testudo spp.', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Testudines', 'Testudo spp.'] },
+            { emoji: '🦕', name: 'Sauropode', gender: 'm', latin: 'Brachiosaurus altithorax', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Brachiosaurus altithorax'] },
+            { emoji: '🦖', name: 'T-Rex', gender: 'm', latin: 'Tyrannosaurus rex', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Tyrannosaurus rex'] },
+            { emoji: '🐔', name: 'Poule domestique', gender: 'f', latin: 'Gallus gallus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Galloanserae', 'Galliformes', 'Phasianidae', 'Gallus gallus'] },
+            { emoji: '🦚', name: 'Paon', gender: 'm', latin: 'Pavo cristatus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Galloanserae', 'Galliformes', 'Phasianidae', 'Pavo cristatus'] },
+            { emoji: '🦃', name: 'Dindon', gender: 'm', latin: 'Meleagris gallopavo', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Galloanserae', 'Galliformes', 'Meleagris gallopavo'] },
+            { emoji: '🦢', name: 'Cygne', gender: 'm', latin: 'Cygnus spp.', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Galloanserae', 'Anseriformes', 'Cygnus spp.'] },
+            { emoji: '🦆', name: 'Canard colvert', gender: 'm', latin: 'Anas platyrhynchos', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Galloanserae', 'Anseriformes', 'Anas platyrhynchos'] },
+            { emoji: '🦩', name: 'Flamant rose', gender: 'm', latin: 'Phoenicopterus roseus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Columbimorphae', 'Phoenicopterus roseus'] },
+            { emoji: '🕊️', name: 'Colombe', gender: 'f', latin: 'Columba livia', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Columbimorphae', 'Columbiformes', 'Columba livia'] },
+            { emoji: '🦤', name: 'Dodo', gender: 'm', latin: 'Raphus cucullatus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Columbimorphae', 'Columbiformes', 'Raphus cucullatus'] },
+            { emoji: '🐧', name: 'Manchot', gender: 'm', latin: 'Aptenodytes forsteri', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Aequorlitornithes', 'Aptenodytes forsteri'] },
+            { emoji: '🦉', name: 'Hibou', gender: 'm', latin: 'Bubo bubo', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Inopinaves', 'Strigiformes', 'Bubo bubo'] },
+            { emoji: '🦅', name: 'Aigle royal', gender: 'm', latin: 'Aquila chrysaetos', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Dinosauria', 'Saurischia', 'Theropoda', 'Aves', 'Neoaves', 'Inopinaves', 'Accipitriformes', 'Aquila chrysaetos'] },
+            { emoji: '🐊', name: 'Crocodile du Nil', gender: 'm', latin: 'Crocodylus niloticus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Sauropsida', 'Archosauria', 'Crocodylia', 'Crocodylus niloticus'] },
+            
+            // Mammifères
+            { emoji: '🦘', name: 'Kangourou', gender: 'm', latin: 'Macropus rufus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Marsupialia', 'Macropus rufus'] },
+            { emoji: '🐨', name: 'Koala', gender: 'm', latin: 'Phascolarctos cinereus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Marsupialia', 'Phascolarctos cinereus'] },
+            { emoji: '🐘', name: 'Éléphant d\'Afrique', gender: 'm', latin: 'Loxodonta africana', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Afrotheria', 'Proboscidea', 'Elephantidae', 'Loxodonta africana'] },
+            { emoji: '🦣', name: 'Mammouth', gender: 'm', latin: 'Mammuthus primigenius', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Afrotheria', 'Proboscidea', 'Elephantidae', 'Mammuthus primigenius'] },
+            { emoji: '🦥', name: 'Paresseux', gender: 'm', latin: 'Bradypus variegatus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Xenarthra', 'Bradypus variegatus'] },
+            { emoji: '🦔', name: 'Hérisson', gender: 'm', latin: 'Erinaceus europaeus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Eulipotyphla', 'Erinaceus europaeus'] },
+            { emoji: '🦇', name: 'Chauve-souris', gender: 'f', latin: 'Myotis myotis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Chiroptera', 'Myotis myotis'] },
+            { emoji: '🐪', name: 'Dromadaire', gender: 'm', latin: 'Camelus dromedarius', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Camelidae', 'Camelus', 'Camelus dromedarius'] },
+            { emoji: '🐫', name: 'Chameau', gender: 'm', latin: 'Camelus bactrianus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Camelidae', 'Camelus', 'Camelus bactrianus'] },
+            { emoji: '🦙', name: 'Lama', gender: 'm', latin: 'Lama glama', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Camelidae', 'Lama glama'] },
+            { emoji: '🐷', name: 'Cochon domestique', gender: 'm', latin: 'Sus scrofa', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Suina', 'Sus scrofa'] },
+            { emoji: '🦒', name: 'Girafe', gender: 'f', latin: 'Giraffa camelopardalis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Giraffa camelopardalis'] },
+            { emoji: '🦌', name: 'Cerf', gender: 'm', latin: 'Cervus elaphus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Cervidae', 'Cervus elaphus'] },
+            { emoji: '🫎', name: 'Élan', gender: 'm', latin: 'Alces alces', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Cervidae', 'Alces alces'] },
+            { emoji: '🐑', name: 'Mouton domestique', gender: 'm', latin: 'Ovis aries', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Caprinae', 'Ovis aries'] },
+            { emoji: '🐐', name: 'Chèvre domestique', gender: 'f', latin: 'Capra hircus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Caprinae', 'Capra hircus'] },
+            { emoji: '🐃', name: 'Buffle Asiatique', gender: 'm', latin: 'Bubalus arnee', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Bovinae', 'Bubalus arnee'] },
+            { emoji: '🦬', name: 'Bison', gender: 'm', latin: 'Bison bison', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Bovinae', 'Bison bison'] },
+            { emoji: '🐮', name: 'Vache domestique', gender: 'f', latin: 'Bos taurus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Bovinae', 'Bos taurus'] },
+            { emoji: '🦛', name: 'Hippopotame', gender: 'm', latin: 'Hippopotamus amphibius', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Cetancodonta', 'Hippopotamus amphibius'] },
+            { emoji: '🐬', name: 'Dauphin', gender: 'm', latin: 'Delphinus delphis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Cetancodonta', 'Cetacea', 'Delphinus delphis'] },
+            { emoji: '🐳', name: 'Baleine', gender: 'f', latin: 'Balaenoptera musculus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Artiodactyla', 'Cetancodonta', 'Cetacea', 'Balaenoptera musculus'] },
+            { emoji: '🐴', name: 'Cheval domestique', gender: 'm', latin: 'Equus caballus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Perissodactyla', 'Equidae', 'Equus caballus'] },
+            { emoji: '🦓', name: 'Zèbre', gender: 'm', latin: 'Equus quagga', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Perissodactyla', 'Equidae', 'Equus quagga'] },
+            { emoji: '🦏', name: 'Rhinocéros', gender: 'm', latin: 'Ceratotherium simum', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Perissodactyla', 'Rhinocerotidae', 'Ceratotherium simum'] },
+            { emoji: '🐯', name: 'Tigre', gender: 'm', latin: 'Panthera tigris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Feliformia', 'Felidae', 'Pantherinae', 'Panthera tigris'] },
+            { emoji: '🦁', name: 'Lion', gender: 'm', latin: 'Panthera leo', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Feliformia', 'Felidae', 'Pantherinae', 'Panthera leo'] },
+            { emoji: '🐆', name: 'Léopard', gender: 'm', latin: 'Panthera pardus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Feliformia', 'Felidae', 'Pantherinae', 'Panthera pardus'] },
+            { emoji: '🐱', name: 'Chat domestique', gender: 'm', latin: 'Felis catus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Feliformia', 'Felidae', 'Felinae', 'Felis catus'] },
+            { emoji: '🐶', name: 'Chien domestique', gender: 'm', latin: 'Canis familiaris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Canidae', 'Canis', 'Canis familiaris'] },
+            { emoji: '🐺', name: 'Loup gris', gender: 'm', latin: 'Canis lupus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Canidae', 'Canis', 'Canis lupus'] },
+            { emoji: '🦊', name: 'Renard roux', gender: 'm', latin: 'Vulpes vulpes', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Canidae', 'Vulpes vulpes'] },
+            { emoji: '🐻', name: 'Ours brun', gender: 'm', latin: 'Ursus arctos', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Ursidae', 'Ursus arctos'] },
+            { emoji: '🐼', name: 'Panda géant', gender: 'm', latin: 'Ailuropoda melanoleuca', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Ursidae', 'Ailuropoda melanoleuca'] },
+            { emoji: '🦭', name: 'Phoque', gender: 'm', latin: 'Phoca vitulina', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Pinnipedia', 'Phoca vitulina'] },
+            { emoji: '🦨', name: 'Mouffette', gender: 'f', latin: 'Mephitis mephitis', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Musteloidea', 'Mephitis mephitis'] },
+            { emoji: '🦝', name: 'Raton laveur', gender: 'm', latin: 'Procyon lotor', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Musteloidea', 'Procyon lotor'] },
+            { emoji: '🦡', name: 'Blaireau', gender: 'm', latin: 'Meles meles', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Musteloidea', 'Mustelidae', 'Meles meles'] },
+            { emoji: '🦦', name: 'Loutre', gender: 'f', latin: 'Lutra lutra', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Laurasiatheria', 'Ferungulata', 'Carnivora', 'Caniformia', 'Arctoidea', 'Musteloidea', 'Mustelidae', 'Lutra lutra'] },
+            { emoji: '🐰', name: 'Lapin de garenne', gender: 'm', latin: 'Oryctolagus cuniculus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Lagomorpha', 'Oryctolagus cuniculus'] },
+            { emoji: '🐿️', name: 'Écureuil', gender: 'm', latin: 'Sciurus vulgaris', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Rodentia', 'Sciuromorpha', 'Sciurus vulgaris'] },
+            { emoji: '🦫', name: 'Castor', gender: 'm', latin: 'Castor fiber', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Rodentia', 'Sciuromorpha', 'Castor fiber'] },
+            { emoji: '🐹', name: 'Hamster', gender: 'm', latin: 'Cricetinae', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Rodentia', 'Myomorpha', 'Cricetinae'] },
+            { emoji: '🐀', name: 'Rat surmulot', gender: 'm', latin: 'Rattus norvegicus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Rodentia', 'Myomorpha', 'Muridae', 'Rattus norvegicus'] },
+            { emoji: '🐭', name: 'Souris domestique', gender: 'f', latin: 'Mus musculus', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Glires', 'Rodentia', 'Myomorpha', 'Muridae', 'Mus musculus'] },
+            { emoji: '🐵', name: 'Macaque', gender: 'm', latin: 'Macaca spp.', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Primates', 'Cercopithecidae', 'Macaca spp.'] },
+            { emoji: '🦧', name: 'Orang-outan', gender: 'm', latin: 'Pongo spp.', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Primates', 'Hominidae', 'Ponginae', 'Pongo spp.'] },
+            { emoji: '🦍', name: 'Gorille', gender: 'm', latin: 'Gorilla gorilla', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Primates', 'Hominidae', 'Homininae', 'Gorilla gorilla'] },
+            { emoji: '👤', name: 'Humain', gender: 'm', latin: 'Homo sapiens', clades: ['Eukaryota', 'Opisthokonta', 'Metazoa', 'Eumetazoa', 'Bilateria', 'Deuterostomia', 'Chordata', 'Vertebrata', 'Tetrapoda', 'Amniota', 'Mammalia', 'Placentalia', 'Euarchontoglires', 'Primates', 'Hominidae', 'Homininae', 'Homo sapiens'] }
+        ];
+		//{ emoji: '🫎', name: 'Élan', gender: 'm', latin: 'Alces alces', family: 'Cervidae', order: 'Artiodactyla', class: 'Mammalia', species: 'Alces', genus: 'Alces' },
+		//{ emoji: '🪿', name: 'Oie', gender: 'f', latin: 'Anser anser', family: 'Anatidae', order: 'Anseriformes', class: 'Aves', species: 'Anser', genus: 'Anser' },
+		//{ emoji: '🪼', name: 'Méduse', gender: 'f', latin: 'Aurelia aurita', family: 'Ulmaridae', order: 'Semaeostomeae', class: 'Scyphozoa', species: 'Aurelia', genus: 'Aurelia' },
+		//{ emoji: '🫛', name: 'Pois', gender: 'm', latin: 'Pisum sativum', family: 'Fabaceae', order: 'Fabales', class: 'Angiospermes', species: 'Pisum', genus: 'Pisum' },
+		//{ emoji: '🫚', name: 'Gingembre', gender: 'm', latin: 'Zingiber officinale', family: 'Zingiberaceae', order: 'Zingiberales', class: 'Angiospermes', species: 'Zingiber', genus: 'Zingiber' },
+		//{ emoji: '🪻', name: 'Jacinthe', gender: 'f', latin: 'Hyacinthus orientalis', family: 'Asparagaceae', order: 'Asparagales', class: 'Angiospermes', species: 'Hyacinthus', genus: 'Hyacinthus' },
+
+// Gère l'article grammatical pour le nom d'un organisme
         function getOrganismNameWithArticle(org) {
             const vowels = 'aàâeéèêëiîïoôuùûy';
             let article;
@@ -492,69 +602,92 @@
             return article + org.name;
         }
 
+        /**
+         * NOUVELLE FONCTION getDivergenceTime
+         * Calcule un score de divergence relatif basé sur la profondeur
+         * de l'ancêtre commun dans le tableau `clades`.
+         * Un score BAS = PROCHE (ancêtre récent).
+         * Un score HAUT = LOIN (ancêtre ancien).
+         */
         function getDivergenceTime(org1, org2) {
-            if (org1.species === org2.species) return 0; if (org1.genus === org2.genus) return 10;
-            if (org1.family === org2.family) return 30;
-            const key1 = org1.family + '-' + org2.family, key2 = org2.family + '-' + org1.family;
-            if (divergenceTimes[key1]) return divergenceTimes[key1]; if (divergenceTimes[key2]) return divergenceTimes[key2];
-            const key3 = org1.order + '-' + org2.order, key4 = org2.order + '-' + org1.order;
-            if (divergenceTimes[key3]) return divergenceTimes[key3]; if (divergenceTimes[key4]) return divergenceTimes[key4];
-            const key5 = org1.class + '-' + org2.class, key6 = org2.class + '-' + org1.class;
-            if (divergenceTimes[key5]) return divergenceTimes[key5]; if (divergenceTimes[key6]) return divergenceTimes[key6];
-            if (org1.class !== org2.class) return 800; if (org1.order !== org2.order) return 100; return 50;
+            const cladePath1 = org1.clades;
+            const cladePath2 = org2.clades;
+
+            // Si les listes de clades n'existent pas (au cas où)
+            if (!cladePath1 || !cladePath2) return 1000;
+
+            // 1. Vérifier s'il s'agit de la même espèce (dernier élément du clade)
+            if (cladePath1[cladePath1.length - 1] === cladePath2[cladePath2.length - 1]) {
+                return 0;
+            }
+
+            // 2. Trouver l'index du dernier clade commun
+            let commonIndex = -1;
+            for (let i = 0; i < Math.min(cladePath1.length, cladePath2.length); i++) {
+                if (cladePath1[i] === cladePath2[i]) {
+                    commonIndex = i;
+                } else {
+                    break; // Les chemins divergent
+                }
+            }
+
+            // Si aucun clade commun n'est trouvé (sauf la racine implicite "Eukaryota" etc.)
+            if (commonIndex === -1) return 1000; 
+
+            // 3. Assigner un "score" de divergence basé sur la profondeur de l'ancêtre
+            // Plus l'index est élevé, plus l'ancêtre est récent, plus le score doit être BAS.
+            const maxEstimatedDepth = 20; // Une estimation de la profondeur max de l'arbre
+            
+            // Score de base : (ProfondeurMax - ProfondeurCommune)
+            // Ex: Ancêtre commun à l'index 12 -> score = 20 - 12 = 8 (très proche)
+            // Ex: Ancêtre commun à l'index 2 -> score = 20 - 2 = 18 (très loin)
+            // On multiplie par 10 pour avoir des chiffres plus grands
+            let divergenceScore = (maxEstimatedDepth - commonIndex) * 10;
+
+            return divergenceScore;
         }
 
+        /**
+         * NOUVELLE FONCTION SYSTÉMATIQUE
+         * Trouve le plus petit groupe monophylétique (ancêtre commun le plus récent)
+         * en comparant les listes de clades de deux organismes.
+         */
         function findCommonClade(org1, org2) {
-            if (org1.species === org2.species) return { name: org1.name };
-            if (org1.genus === org2.genus) return { name: org1.genus };
-            if (org1.family === org2.family) return { name: org1.family };
-            if (org1.order === org2.order) return { name: org1.order };
-            const ferungulata = ['Carnivora', 'Artiodactyla', 'Perissodactyla', 'Cetacea'];
-            if (org1.class === 'Mammalia' && org2.class === 'Mammalia') {
-                if (ferungulata.includes(org1.order) && ferungulata.includes(org2.order)) {
-                    if (org1.order === 'Carnivora' && (org2.order === 'Artiodactyla' || org2.order === 'Perissodactyla' || org2.order === 'Cetacea')) return { name: 'Ferungulata' };
-                    if (org2.order === 'Carnivora' && (org1.order === 'Artiodactyla' || org1.order === 'Perissodactyla' || org1.order === 'Cetacea')) return { name: 'Ferungulata' };
-                    if ((org1.order === 'Artiodactyla' || org1.order === 'Perissodactyla' || org1.order === 'Cetacea') && (org2.order === 'Artiodactyla' || org2.order === 'Perissodactyla' || org2.order === 'Cetacea')) return { name: 'Ungulata (Ongulés)' };
-                }
-                const laurasiatheria = ['Carnivora', 'Artiodactyla', 'Perissodactyla', 'Cetacea', 'Chiroptera', 'Eulipotyphla'];
-                if (laurasiatheria.includes(org1.order) && laurasiatheria.includes(org2.order)) return { name: 'Laurasiatheria' };
-                const euarchontoglires = ['Primates', 'Rodentia', 'Lagomorpha'];
-                if (euarchontoglires.includes(org1.order) && euarchontoglires.includes(org2.order)) {
-                    if ((org1.order === 'Rodentia' || org1.order === 'Lagomorpha') && (org2.order === 'Rodentia' || org2.order === 'Lagomorpha')) return { name: 'Glires' };
-                    return { name: 'Euarchontoglires' };
-                }
-                const afrotheria = ['Proboscidea'];
-                if (afrotheria.includes(org1.order) && afrotheria.includes(org2.order)) return { name: 'Afrotheria' };
-                if ((afrotheria.includes(org1.order) && !afrotheria.includes(org2.order)) || (afrotheria.includes(org2.order) && !afrotheria.includes(org1.order))) return { name: 'Placentalia (Mammifères placentaires)' };
+            const clades1 = org1.clades;
+            const clades2 = org2.clades;
+            
+            if (!clades1 || !clades2) {
+                // Fallback pour les organismes qui n'auraient pas été mappés
+                console.error("Organisme sans clades:", org1, org2);
+                return { name: "Eukaryota" };
             }
-            if (org1.class === org2.class) return { name: org1.class };
-            if ((org1.class === 'Aves' && org2.order === 'Crocodilia') || (org2.class === 'Aves' && org1.order === 'Crocodilia')) return { name: 'Archosaures' };
-            if ((org1.class === 'Aves' && org2.class === 'Reptilia') || (org2.class === 'Aves' && org1.class === 'Reptilia')) return { name: 'Sauropsides' };
-            if ((org1.class === 'Mammalia' || org1.class === 'Aves' || org1.class === 'Reptilia') && (org2.class === 'Mammalia' || org2.class === 'Aves' || org2.class === 'Reptilia')) return { name: 'Amniotes' };
-            if ((org1.class === 'Mammalia' || org1.class === 'Aves' || org1.class === 'Reptilia' || org1.class === 'Amphibia') && (org2.class === 'Mammalia' || org2.class === 'Aves' || org2.class === 'Reptilia' || org2.class === 'Amphibia')) return { name: 'Tétrapodes' };
-            const vertebrates = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes'];
-            if (vertebrates.includes(org1.class) && vertebrates.includes(org2.class)) return { name: 'Vertébrés (Chordata)' };
-            const arthropods = ['Insecta', 'Arachnida', 'Malacostraca'];
-            if (arthropods.includes(org1.class) && arthropods.includes(org2.class)) return { name: 'Arthropodes' };
-            const mollusks = ['Gastropoda', 'Cephalopoda'];
-            if (mollusks.includes(org1.class) && mollusks.includes(org2.class)) return { name: 'Mollusques' };
-            const protostomes = ['Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda'];
-            if (protostomes.includes(org1.class) && protostomes.includes(org2.class)) return { name: 'Protostomiens' };
-            const bilaterians = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes', 'Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda'];
-            if (bilaterians.includes(org1.class) && bilaterians.includes(org2.class)) return { name: 'Bilatériens' };
-            const animals = ['Mammalia', 'Aves', 'Reptilia', 'Amphibia', 'Actinopterygii', 'Chondrichthyes', 'Insecta', 'Arachnida', 'Malacostraca', 'Gastropoda', 'Cephalopoda', 'Anthozoa'];
-            if (animals.includes(org1.class) && animals.includes(org2.class)) return { name: 'Métazoaires (Animaux)' };
-            if ((org1.class === 'Angiospermes' || org1.class === 'Gymnospermes') && (org2.class === 'Angiospermes' || org2.class === 'Gymnospermes')) return { name: 'Spermatophytes (plantes à graines)' };
-            if (org1.class === 'Fungi' && org2.class === 'Fungi') return { name: 'Champignons (Fungi)' };
-            return { name: 'Eucaryotes' };
+
+            let lastCommonClade = "Formes de vie"; // Le clade racine
+            
+            // On parcourt les deux listes de clades tant qu'elles sont identiques
+            for (let i = 0; i < Math.min(clades1.length, clades2.length); i++) {
+                if (clades1[i] === clades2[i]) {
+                    lastCommonClade = clades1[i];
+                } else {
+                    // Dès qu'on trouve une différence, on s'arrête.
+                    // Le précédent était le dernier en commun.
+                    break;
+                }
+            }
+            
+            return { name: lastCommonClade };
         }
+        
+        // --- DEBUT DES FONCTIONS CORRIGEES ---
 
         function getQuestionSignature(org1, org2, org3) {
-            const ids = [org1.species, org2.species, org3.species].sort(); return ids.join('|');
+            // FIX: Utilise .latin (unique) au lieu de .species (n'existe plus)
+            const ids = [org1.latin, org2.latin, org3.latin].sort(); return ids.join('|');
         }
 
         function getPairSignature(org1, org2) {
-            const ids = [org1.species, org2.species].sort(); return ids.join('|');
+            // FIX: Utilise .latin (unique) au lieu de .species (n'existe plus)
+            const ids = [org1.latin, org2.latin].sort(); return ids.join('|');
         }
 
         function selectGameMode(mode) {
@@ -571,16 +704,21 @@
 
         function startGameWithCount(numQuestions) {
             maxQuestions = numQuestions; gameMode = selectedGameMode;
+            
+            // FIX: Les filtres utilisent o.clades.includes() au lieu de o.class
             if (gameMode === 'plants') {
-                availableOrganisms = organisms.filter(o => o.class === 'Angiospermes' || o.class === 'Gymnospermes');
+                // On filtre sur 'Spermatophyta' pour inclure Gymnospermes et Angiospermes
+                availableOrganisms = organisms.filter(o => o.clades.includes('Spermatophyta'));
                 document.getElementById('currentMode').textContent = '🌿 Mode Plantes (' + numQuestions + ' questions)';
             } else if (gameMode === 'animals') {
-                availableOrganisms = organisms.filter(o => o.class !== 'Angiospermes' && o.class !== 'Gymnospermes' && o.class !== 'Fungi');
+                // On filtre sur 'Metazoa' (le clade des animaux)
+                availableOrganisms = organisms.filter(o => o.clades.includes('Metazoa'));
                 document.getElementById('currentMode').textContent = '🦁 Mode Animaux (' + numQuestions + ' questions)';
             } else {
                 availableOrganisms = organisms;
                 document.getElementById('currentMode').textContent = '🌍 Mode Tout le vivant (' + numQuestions + ' questions)';
             }
+            
             score = 0; total = 0; questionNumber = 1; askedQuestions = []; usedCorrectPairs = [];
             document.getElementById('questionCountSelection').style.display = 'none';
             document.getElementById('gameContent').style.display = 'block';
@@ -590,13 +728,35 @@
             displayQuestion();
         }
 
-        function returnToMenu() {
+function returnToMenu() {
             score = 0; total = 0; questionNumber = 1; askedQuestions = []; usedCorrectPairs = []; selectedGameMode = null; currentQuestion = null;
-            document.getElementById('score').textContent = '0'; document.getElementById('total').textContent = '0';
-            document.getElementById('percentage').textContent = '-'; document.getElementById('questionNum').textContent = '1';
+            
+            // Réinitialisation des scores affichés
+            document.getElementById('score').textContent = '0'; 
+            document.getElementById('total').textContent = '0';
+            document.getElementById('percentage').textContent = '-'; 
+            document.getElementById('questionNum').textContent = '1';
+            
+            // Masquer le jeu, afficher la sélection du mode
             document.getElementById('modeSelection').style.display = 'block';
             document.getElementById('questionCountSelection').style.display = 'none';
             document.getElementById('gameContent').style.display = 'none';
+
+            const modeIndicator = document.querySelector('.game-mode-indicator');
+            if (modeIndicator) {
+                modeIndicator.innerHTML = 
+                    '<span id="currentMode"></span>' +
+                    '<button class="change-mode-btn" onclick="returnToMenu()">Changer de mode</button>';
+            }
+            
+          
+            const questionDiv = document.querySelector('.question');
+            if (questionDiv) {
+                
+                questionDiv.innerHTML = 
+                    'Parmi ces trois organismes, quels sont les <strong>deux qui partagent l\'ancêtre commun le plus récent</strong> ?';
+            }
+            
         }
 
         function generateQuestion() {
@@ -604,21 +764,42 @@
             while (attempts < maxAttempts) {
                 attempts++;
                 const shuffled = [...availableOrganisms].sort(() => Math.random() - 0.5);
-                if (shuffled.length < 3) return null;
+                
+                // Vérification de sécurité si le filtre a échoué
+                if (shuffled.length < 3) {
+                    console.error("Pas assez d'organismes dans availableOrganisms!", availableOrganisms);
+                    return null; 
+                }
+                
                 const org1 = shuffled[0], org2 = shuffled[1], org3 = shuffled[2];
-                if (org1.species === org2.species || org1.species === org3.species || org2.species === org3.species) continue;
+                
+                // Vérification de sécurité (ne devrait plus arriver avec .latin)
+                if (org1.latin === org2.latin || org1.latin === org3.latin || org2.latin === org3.latin) continue;
+                
                 const signature = getQuestionSignature(org1, org2, org3);
                 if (askedQuestions.includes(signature)) continue;
+                
                 const dist12 = getDivergenceTime(org1, org2), dist13 = getDivergenceTime(org1, org3), dist23 = getDivergenceTime(org2, org3);
                 let closePair, closeTime, distantTime1, distantTime2;
+                
                 if (dist12 <= dist13 && dist12 <= dist23) { closePair = [org1, org2]; closeTime = dist12; distantTime1 = dist13; distantTime2 = dist23; }
                 else if (dist13 <= dist12 && dist13 <= dist23) { closePair = [org1, org3]; closeTime = dist13; distantTime1 = dist12; distantTime2 = dist23; }
                 else { closePair = [org2, org3]; closeTime = dist23; distantTime1 = dist12; distantTime2 = dist13; }
+                
                 const maxDistantTime = Math.max(distantTime1, distantTime2);
-                if (closeTime >= maxDistantTime * 0.9) continue;
+                
+                // Si les 3 sont très proches ou très éloignés (scores similaires), on retire
+                if (closeTime >= maxDistantTime * 0.9 && closeTime !== 0) continue; 
+                // Si les deux "distants" sont en fait aussi proches que le "proche" (ex: A, B, C partagent le même genre)
+                if (Math.abs(dist12 - dist13) < 10 && Math.abs(dist12 - dist23) < 10) continue;
+
+
                 const pairSignature = getPairSignature(closePair[0], closePair[1]);
-                if (usedCorrectPairs.includes(pairSignature)) continue;
-                askedQuestions.push(signature); usedCorrectPairs.push(pairSignature);
+                if (usedCorrectPairs.includes(pairSignature) && usedCorrectPairs.length < availableOrganisms.length * 0.5) continue; // On recycle si on a fait bcp de paires
+                
+                askedQuestions.push(signature); 
+                usedCorrectPairs.push(pairSignature);
+                
                 const orgs = [org1, org2, org3].sort(() => Math.random() - 0.5);
                 const choices = [
                     { pair: [orgs[0], orgs[1]], text: orgs[0].emoji + ' ' + orgs[0].name + ' et ' + orgs[1].emoji + ' ' + orgs[1].name },
@@ -627,14 +808,19 @@
                 ];
                 return { organisms: orgs, choices: choices, correctPair: closePair, closeTime: closeTime, distantTime: maxDistantTime };
             }
-            if (usedCorrectPairs.length > 0 && attempts >= maxAttempts) { usedCorrectPairs = []; return generateQuestion(); }
+            if (usedCorrectPairs.length > 0 && attempts >= maxAttempts) { 
+                console.warn("Recyclage des paires correctes.");
+                usedCorrectPairs = []; 
+                return generateQuestion(); 
+            }
+            console.error("Échec de la génération de question après maxAttempts");
             return null;
         }
 
         function displayQuestion() {
             if (total >= maxQuestions) { showFinalResults(); return; }
             currentQuestion = generateQuestion();
-            if (!currentQuestion) { alert('Erreur lors de la génération de la question'); return; }
+            if (!currentQuestion) { alert('Erreur lors de la génération de la question. Vérifiez la console.'); return; }
             document.getElementById('organisms').innerHTML = currentQuestion.organisms.map(org => `<div class="organism-box"><div class="organism">${org.emoji}</div><div class="organism-label">${org.name}</div></div>`).join('');
             document.getElementById('choices').innerHTML = currentQuestion.choices.map((choice, index) => `<div class="choice" onclick="checkAnswer(${index})">${choice.text}</div>`).join('');
             document.getElementById('feedback').className = 'feedback';
@@ -642,18 +828,23 @@
             document.getElementById('questionNum').textContent = questionNumber;
         }
 
-        function checkAnswer(choiceIndex) {
+        function checkAnswer(choiceIndex) {{
             total++;
             const choice = currentQuestion.choices[choiceIndex];
-            const isCorrect = (choice.pair[0].species === currentQuestion.correctPair[0].species && choice.pair[1].species === currentQuestion.correctPair[1].species) ||
-                             (choice.pair[0].species === currentQuestion.correctPair[1].species && choice.pair[1].species === currentQuestion.correctPair[0].species);
+            
+            // FIX: Utilise .latin au lieu de .species
+            const isCorrect = (choice.pair[0].latin === currentQuestion.correctPair[0].latin && choice.pair[1].latin === currentQuestion.correctPair[1].latin) ||
+                             (choice.pair[0].latin === currentQuestion.correctPair[1].latin && choice.pair[1].latin === currentQuestion.correctPair[0].latin);
             if (isCorrect) score++;
             
             document.querySelectorAll('.choice').forEach((choiceEl, index) => {
                 choiceEl.classList.add('disabled');
                 const pair = currentQuestion.choices[index].pair;
-                const isThisCorrect = (pair[0].species === currentQuestion.correctPair[0].species && pair[1].species === currentQuestion.correctPair[1].species) ||
-                                     (pair[0].species === currentQuestion.correctPair[1].species && pair[1].species === currentQuestion.correctPair[0].species);
+                
+                // FIX: Utilise .latin au lieu de .species
+                const isThisCorrect = (pair[0].latin === currentQuestion.correctPair[0].latin && pair[1].latin === currentQuestion.correctPair[1].latin) ||
+                                     (pair[0].latin === currentQuestion.correctPair[1].latin && pair[1].latin === currentQuestion.correctPair[0].latin);
+                
                 if (isThisCorrect) { choiceEl.classList.add('correct'); }
                 else if (index === choiceIndex && !isCorrect) { choiceEl.classList.add('incorrect'); }
             });
@@ -662,13 +853,15 @@
             feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
             const org1 = currentQuestion.correctPair[0];
             const org2 = currentQuestion.correctPair[1];
-            const wrongOrg = currentQuestion.organisms.find(o => o.species !== org1.species && o.species !== org2.species);
+            
+            // FIX: Utilise .latin au lieu de .species
+            const wrongOrg = currentQuestion.organisms.find(o => o.latin !== org1.latin && o.latin !== org2.latin);
             const commonClade = findCommonClade(org1, org2);
             
-            // *** BLOC DE FEEDBACK SIMPLIFIÉ ***
             const org1NameWithArticle = getOrganismNameWithArticle(org1);
             const org2NameWithArticle = getOrganismNameWithArticle(org2);
 
+            // FIX: Le feedback n'affiche plus "millions d'années" mais le score relatif.
             if (isCorrect) {
                 feedback.innerHTML = 
                     `<div class="feedback-title">✅ Excellente réponse !</div>
@@ -677,10 +870,10 @@
                         <strong>${org2.emoji} ${org2NameWithArticle}</strong> (<em>${org2.latin}</em>) 
                         sont bien les deux espèces les plus proches.
                         <div class="time-info">
-                           ⏰ <strong>Divergence évolutive :</strong><br>
+                           ⏰ <strong>Parenté :</strong><br>
                            • Ces deux espèces partagent <strong>le groupe</strong> des <strong>${commonClade.name}</strong>.<br>
-                           • Elles ont divergé il y a environ <span class="time-value">${currentQuestion.closeTime} millions d'années</span>.<br>
-                           • ${wrongOrg.name} a divergé du groupe il y a environ <span class="time-value">${currentQuestion.distantTime} millions d'années</span>.
+                           • Score de divergence : <span class="time-value">${currentQuestion.closeTime}</span> (plus le score est bas, plus c'est proche).<br>
+                           • ${wrongOrg.name} a un score de divergence de <span class="time-value">${currentQuestion.distantTime}</span> avec ce groupe.
                         </div>
                      </div>`;
             } else {
@@ -691,18 +884,25 @@
                         <div class="time-info">
                            ⏰ <strong>Pourquoi ?</strong><br>
                            • Ces deux espèces partagent <strong>le groupe</strong> des <strong>${commonClade.name}</strong>.<br>
-                           • Elles ont divergé il y a seulement <span class="time-value">${currentQuestion.closeTime} millions d'années</span>.<br>
-                           • ${wrongOrg.name} s'est séparé du groupe il y a environ <span class="time-value">${currentQuestion.distantTime} millions d'années</span>.
+						    • Score de divergence : <span class="time-value">${currentQuestion.closeTime}</span> (plus le score est bas, plus c'est proche).<br>
+                           • ${wrongOrg.name} a un score de divergence de <span class="time-value">${currentQuestion.distantTime}</span> avec ce groupe.
                         </div>
-                        <div class="taxonomy-info">${org1.latin} et ${org2.latin}</div>
                      </div>`;
+					 }
             }
-
-            document.getElementById('score').textContent = score;
-            document.getElementById('total').textContent = total;
+            
+            const scoreEl = document.getElementById('score');
+            if (scoreEl) scoreEl.textContent = score;
+            
+            const totalEl = document.getElementById('total');
+            if (totalEl) totalEl.textContent = total;
+            
             const percentage = Math.round((score / total) * 100);
-            document.getElementById('percentage').textContent = percentage + '%';
-            document.getElementById('nextBtn').className = 'next-btn show';
+            const percentageEl = document.getElementById('percentage');
+            if (percentageEl) percentageEl.textContent = percentage + '%';
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) nextBtn.className = 'next-btn show';
         }
 
         function nextQuestion() {
@@ -711,18 +911,64 @@
         }
 
         function showFinalResults() {
-            const percentage = Math.round((score / total) * 100); let message = '', emoji = '';
-            if (percentage >= 90) { emoji = '🏆'; message = 'Expert en phylogénie ! Félicitations !'; }
-            else if (percentage >= 75) { emoji = '🌟'; message = 'Excellent travail ! Très bonne maîtrise !'; }
-            else if (percentage >= 60) { emoji = '👍'; message = 'Bon travail ! Continue comme ça !'; }
-            else if (percentage >= 40) { emoji = '📚'; message = 'Pas mal ! Il y a encore du potentiel !'; }
-            else { emoji = '💪'; message = 'Continue à t\'entraîner, tu vas progresser !'; }
-            document.getElementById('organisms').innerHTML = `<div style="text-align: center; width: 100%;"><div style="font-size: 6em; margin-bottom: 20px;">${emoji}</div><h2 style="font-size: 2em; margin-bottom: 20px;">Session terminée !</h2><p style="font-size: 1.5em; margin-bottom: 10px;">Score final : <strong>${score} / ${total}</strong></p><p style="font-size: 1.3em; color: #667eea; margin-bottom: 30px;"><strong>${percentage}%</strong></p><p style="font-size: 1.2em; color: #666;">${message}</p></div>`;
-            document.getElementById('choices').innerHTML = '';
-            document.getElementById('feedback').className = 'feedback';
-            document.getElementById('nextBtn').className = 'next-btn';
-            document.querySelector('.question').innerHTML = '<strong>Merci d\'avoir joué !</strong><br>Voulez-vous recommencer ?';
-            document.querySelector('.game-mode-indicator').innerHTML = '<button class="change-mode-btn" onclick="returnToMenu()" style="margin: 0 auto;">🔄 Nouvelle session</button>';
+            const percentage = Math.round((score / total) * 100);
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                emoji = '🏆';
+                message = 'Expert en phylogénie ! Félicitations !';
+            } else if (percentage >= 75) {
+                emoji = '🌟';
+                message = 'Excellent travail ! Très bonne maîtrise !';
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                message = 'Bon travail ! Continue comme ça !';
+            } else if (percentage >= 40) {
+                emoji = '📚';
+                message = 'Pas mal ! Il y a encore du potentiel !';
+            } else {
+                emoji = '💪';
+                message = 'Continue à t\'entraîner, tu vas progresser !';
+            }
+            
+            const organismsDiv = document.getElementById('organisms');
+            if (organismsDiv) {
+                organismsDiv.innerHTML = 
+                    '<div style="text-align: center; width: 100%;">' +
+                    '<div style="font-size: 6em; margin-bottom: 20px;">' + emoji + '</div>' +
+                    '<h2 style="font-size: 2em; margin-bottom: 20px;">Session terminée !</h2>' +
+                    '<p style="font-size: 1.5em; margin-bottom: 10px;">Score final : <strong>' + score + ' / ' + total + '</strong></p>' +
+                    '<p style="font-size: 1.3em; color: #667eea; margin-bottom: 30px;"><strong>' + percentage + '%</strong></p>' +
+                    '<p style="font-size: 1.2em; color: #666;">' + message + '</p>' +
+                    '</div>';
+            }
+            
+            const choicesDiv = document.getElementById('choices');
+            if (choicesDiv) {
+                choicesDiv.innerHTML = '';
+            }
+            
+            const feedbackDiv = document.getElementById('feedback');
+            if (feedbackDiv) {
+                feedbackDiv.className = 'feedback';
+            }
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.className = 'next-btn';
+            }
+            
+            const questionDiv = document.querySelector('.question');
+            if (questionDiv) {
+                questionDiv.innerHTML = '<strong>Merci d\'avoir joué !</strong><br>Voulez-vous recommencer ?';
+            }
+            
+            const modeIndicator = document.querySelector('.game-mode-indicator');
+            if (modeIndicator) {
+                modeIndicator.innerHTML = 
+                    '<button class="change-mode-btn" onclick="returnToMenu()" style="margin: 0 auto;">🔄 Nouvelle session</button>';
+            }
         }
     </script>
 </body>
